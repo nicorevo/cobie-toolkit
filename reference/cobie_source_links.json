@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-06-01",
+  "sources": [
+    {
+      "name": "nima COBie resources",
+      "url": "https://wearenima.im/resources/construction-operations-building-information-exchange-cobie/",
+      "note": "Lists COBie Templates; latest observed Q2 April 2026."
+    },
+    {
+      "name": "NIBS COBie standard",
+      "url": "https://nibs.org/nbims/v3/cobie/",
+      "note": "COBie v3 standard page, includes structure and version history."
+    },
+    {
+      "name": "buildingSMART COBie downloads",
+      "url": "https://cobiecert.buildingsmart.org/resources/downloads/",
+      "note": "Points to COBie 2.4 standard, Chapter 4.2 and Annex A."
+    },
+    {
+      "name": "NBIMS-US V3 Chapter 4.2 COBie PDF",
+      "url": "https://evolve-consultancy.com/wp-content/uploads/2025/05/NBIMS-US_V3_4.2_COBie.pdf",
+      "note": "COBie 2.4 specification PDF mirror used for research."
+    },
+    {
+      "name": "Supabase React quickstart",
+      "url": "https://supabase.com/docs/guides/auth/quickstarts/react",
+      "note": "React/Vite env variable pattern."
+    },
+    {
+      "name": "Supabase Data REST API",
+      "url": "https://supabase.com/docs/guides/api",
+      "note": "Auto-generated REST API from database schema."
+    },
+    {
+      "name": "React Admin Supabase integration",
+      "url": "https://supabase.com/partners/integrations/react-admin",
+      "note": "React Admin integration with Supabase."
+    },
+    {
+      "name": "ra-supabase GitHub",
+      "url": "https://github.com/marmelab/ra-supabase",
+      "note": "dataProvider/authProvider package."
+    },
+    {
+      "name": "Material React Table",
+      "url": "https://www.material-react-table.com/about",
+      "note": "Data grid built on TanStack Table V8."
+    },
+    {
+      "name": "Codex AGENTS.md",
+      "url": "https://developers.openai.com/codex/guides/agents-md",
+      "note": "Codex reads AGENTS.md before work."
+    },
+    {
+      "name": "Codex Agent Skills",
+      "url": "https://developers.openai.com/codex/skills",
+      "note": "Skills are directories with SKILL.md."
+    }
+  ]
+}

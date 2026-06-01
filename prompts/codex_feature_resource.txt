@@ -1,0 +1,12 @@
+Usa la skill react-admin-resource.
+
+Crea o completa una Resource React Admin per: <RESOURCE_NAME>.
+
+Vincoli:
+- backing table/view: <TABLE_OR_VIEW>
+- usare paginazione server-side
+- non duplicare dati in Redux
+- verificare RLS
+- aggiungere filtri minimi
+- aggiornare docs/react-admin-frontend.md
+- riportare files changed e assunzioni

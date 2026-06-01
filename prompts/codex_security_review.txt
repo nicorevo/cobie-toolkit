@@ -1,0 +1,17 @@
+Usa la skill supabase-rls-security-review.
+
+Analizza:
+- supabase/migrations/
+- frontend/src/
+- docs/security-guardrails.md
+
+Trova:
+- RLS mancanti
+- policy troppo ampie
+- service_role leakage
+- funzioni security definer pericolose
+- grants sospetti
+- tabelle esposte senza policy
+- UI che nasconde azioni senza enforcement DB
+
+Produci report con severità e patch SQL suggerite.

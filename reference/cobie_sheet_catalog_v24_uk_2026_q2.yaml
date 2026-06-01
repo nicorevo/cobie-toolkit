@@ -1,0 +1,129 @@
+standard_target: "COBie UK 2.4 spreadsheet"
+template_candidate:
+  name: "COBie Template Q2 (April 2026)"
+  file: "COBie-UK-2.4-Template-2026-04.xltx.zip"
+  source_page: "https://wearenima.im/resources/construction-operations-building-information-exchange-cobie/"
+  status: "candidate - verify by downloading and reading workbook"
+notes:
+  - "This catalog is a conservative starter catalog."
+  - "Do not treat as final until the actual XLTX headers are extracted."
+  - "Preserve unmapped source columns in raw_row jsonb."
+
+sheets:
+  Contact:
+    table: "cobie.contact"
+    primary_display: "email"
+    expected_columns:
+      - Email
+      - CreatedBy
+      - CreatedOn
+      - Category
+      - Company
+      - Phone
+      - ExternalSystem
+      - ExternalObject
+      - ExternalIdentifier
+      - Department
+      - OrganizationCode
+      - GivenName
+      - FamilyName
+      - Street
+      - PostalBox
+      - Town
+      - StateRegion
+      - PostalCode
+      - Country
+  Facility:
+    table: "cobie.facility"
+    primary_display: "name"
+    expected_columns:
+      - Name
+      - CreatedBy
+      - CreatedOn
+      - Category
+      - ProjectName
+      - SiteName
+      - LinearUnits
+      - AreaUnits
+      - VolumeUnits
+      - CurrencyUnit
+      - AreaMeasurement
+      - ExternalSystem
+      - ExternalProjectObject
+      - ExternalProjectIdentifier
+      - ExternalSiteObject
+      - ExternalSiteIdentifier
+      - ExternalFacilityObject
+      - ExternalFacilityIdentifier
+      - Description
+      - ProjectDescription
+      - SiteDescription
+      - Phase
+  Floor:
+    table: "cobie.floor"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, ExternalSystem, ExternalObject, ExternalIdentifier, Elevation, Height, Description]
+  Space:
+    table: "cobie.space"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, FloorName, Description, ExternalSystem, ExternalObject, ExternalIdentifier, RoomTag, UsableHeight, GrossArea, NetArea]
+  Zone:
+    table: "cobie.zone"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, SpaceNames, ExternalSystem, ExternalObject, ExternalIdentifier, Description]
+  Type:
+    table: "cobie.type"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, Description, AssetType, Manufacturer, ModelNumber, WarrantyGuarantorParts, WarrantyDurationParts, WarrantyGuarantorLabor, WarrantyDurationLabor, WarrantyDurationUnit, ReplacementCost, ExpectedLife, DurationUnit, WarrantyDescription, NominalLength, NominalWidth, NominalHeight, ModelReference, Shape, Size, Color, Finish, Grade, Material, Constituents, Features, AccessibilityPerformance, CodePerformance, SustainabilityPerformance]
+  Component:
+    table: "cobie.component"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, TypeName, Space, Description, ExternalSystem, ExternalObject, ExternalIdentifier, SerialNumber, InstallationDate, WarrantyStartDate, TagNumber, BarCode, AssetIdentifier]
+  System:
+    table: "cobie.system"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, ComponentNames, ExternalSystem, ExternalObject, ExternalIdentifier, Description]
+  Assembly:
+    table: "cobie.assembly"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, SheetName, ParentName, ChildNames, AssemblyType, ExternalSystem, ExternalObject, ExternalIdentifier, Description]
+  Connection:
+    table: "cobie.connection"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, ConnectionType, SheetName, RowName1, RowName2, RealizingElement, PortName1, PortName2, ExternalSystem, ExternalObject, ExternalIdentifier, Description]
+  Spare:
+    table: "cobie.spare"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, TypeName, Suppliers, ExternalSystem, ExternalObject, ExternalIdentifier, SetNumber, PartNumber, Description]
+  Resource:
+    table: "cobie.resource"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, ExternalSystem, ExternalObject, ExternalIdentifier, Description]
+  Job:
+    table: "cobie.job"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, Status, TypeName, Description, Duration, DurationUnit, Start, TaskStartUnit, Frequency, FrequencyUnit, ExternalSystem, ExternalObject, ExternalIdentifier, TaskNumber, Priors, ResourceNames]
+  Impact:
+    table: "cobie.impact"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, ImpactType, ImpactStage, SheetName, RowName, Value, ImpactUnit, LeadInTime, Duration, LeadOutTime, ExternalSystem, ExternalObject, ExternalIdentifier, Description]
+  Document:
+    table: "cobie.document"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, ApprovalBy, Stage, SheetName, RowName, Directory, File, ExternalSystem, ExternalObject, ExternalIdentifier, Description, Reference]
+  Attribute:
+    table: "cobie.attribute"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, SheetName, RowName, Value, Unit, ExternalSystem, ExternalObject, ExternalIdentifier, Description, AllowedValues]
+  Coordinate:
+    table: "cobie.coordinate"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Category, SheetName, RowName, CoordinateXAxis, CoordinateYAxis, CoordinateZAxis, ExtSystem, ExtObject, ExtIdentifier, ClockwiseRotation, ElevationalRotation, YawRotation]
+  Issue:
+    table: "cobie.issue"
+    primary_display: "name"
+    expected_columns: [Name, CreatedBy, CreatedOn, Type, Risk, Chance, Impact, SheetName, RowName, Description, Owner, Mitigation, ExtSystem, ExtObject, ExtIdentifier]
+  PickLists:
+    table: "cobie.picklist"
+    primary_display: "value"
+    expected_columns: [SheetName, FieldName, Value, Description]

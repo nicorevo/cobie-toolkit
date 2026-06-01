@@ -1,0 +1,15 @@
+Esegui una release readiness review.
+
+Controlla:
+- typecheck
+- lint
+- build
+- migration status
+- RLS smoke test
+- API smoke test
+- React Admin smoke test
+- documentazione aggiornata
+- nessun secret nel repo
+- catalogo COBie verificato
+
+Produci GO / NO-GO con blocker.

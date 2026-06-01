@@ -1,0 +1,14 @@
+Usa la skill cobie-import-export e cobie-standard-ingestion.
+
+Progetta la fase import/export COBie workbook.
+
+Non implementare ancora parsing definitivo se il template reale non è stato letto.
+
+Output richiesto:
+- architettura Edge Function/worker
+- staging schema
+- validation report schema
+- algoritmo import
+- algoritmo export
+- error codes
+- rollback/commit strategy

@@ -1,0 +1,100 @@
+openapi: 3.0.3
+info:
+  title: COBie Supabase REST API
+  version: 0.1.0
+  description: >
+    Contratto iniziale per API REST COBie esposte tramite Supabase/PostgREST.
+    Gli endpoint reali dipendono dagli schemi esposti e dalle policy RLS.
+servers:
+  - url: https://{projectRef}.supabase.co/rest/v1
+    variables:
+      projectRef:
+        default: example
+security:
+  - SupabaseAuth: []
+components:
+  securitySchemes:
+    SupabaseAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Range:
+      name: Range
+      in: header
+      required: false
+      schema:
+        type: string
+      example: "0-49"
+    PreferCount:
+      name: Prefer
+      in: header
+      required: false
+      schema:
+        type: string
+      example: "count=exact"
+paths:
+  /workbook:
+    get:
+      summary: List COBie workbooks
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          description: Workbooks visible by RLS
+    post:
+      summary: Create COBie workbook
+      responses:
+        '201':
+          description: Created
+  /component:
+    get:
+      summary: List COBie components/assets
+      parameters:
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          description: Components visible by RLS
+    post:
+      summary: Create COBie component
+      responses:
+        '201':
+          description: Created
+  /type:
+    get:
+      summary: List COBie types
+      responses:
+        '200':
+          description: Types visible by RLS
+  /facility:
+    get:
+      summary: List COBie facilities
+      responses:
+        '200':
+          description: Facilities visible by RLS
+  /space:
+    get:
+      summary: List COBie spaces
+      responses:
+        '200':
+          description: Spaces visible by RLS
+  /cobie_assets:
+    get:
+      summary: Read model joining components, types and spaces
+      responses:
+        '200':
+          description: Asset read model visible by RLS
+  /rpc/create_workbook:
+    post:
+      summary: Create workbook through RPC
+      responses:
+        '200':
+          description: Created workbook
+  /rpc/validate_workbook:
+    post:
+      summary: Return validation issues for workbook
+      responses:
+        '200':
+          description: Validation issue list

@@ -1,0 +1,51 @@
+{
+  "workbook_scoped_unique_names": [
+    "facility.name",
+    "floor.name",
+    "space.name",
+    "type.name",
+    "component.name",
+    "system.name",
+    "resource.name",
+    "job.name",
+    "document.name"
+  ],
+  "references": [
+    {
+      "from": "space.floor_name",
+      "to": "floor.name",
+      "scope": "workbook"
+    },
+    {
+      "from": "component.type_name",
+      "to": "type.name",
+      "scope": "workbook"
+    },
+    {
+      "from": "component.space_name",
+      "to": "space.name",
+      "scope": "workbook"
+    },
+    {
+      "from": "spare.type_name",
+      "to": "type.name",
+      "scope": "workbook"
+    },
+    {
+      "from": "job.type_name",
+      "to": "type.name",
+      "scope": "workbook"
+    },
+    {
+      "from": "attribute.sheet_name,row_name",
+      "to": "dynamic sheet row",
+      "scope": "workbook"
+    },
+    {
+      "from": "document.sheet_name,row_name",
+      "to": "dynamic sheet row",
+      "scope": "workbook"
+    }
+  ],
+  "note": "Starter relationship catalog. Verify against actual template and Annex A before hardening constraints."
+}

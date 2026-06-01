@@ -1,0 +1,16 @@
+# Configurazione prudente per Codex.
+# Adeguare ai valori supportati dalla propria versione di Codex CLI/IDE.
+
+model = "gpt-5.5"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+project_doc_max_bytes = 65536
+project_doc_fallback_filenames = [
+  "AGENTS.md",
+  "PROJECT_PLAN.md",
+  "REQUIREMENTS.md",
+  "docs/security-guardrails.md",
+  "docs/data-model-cobie.md",
+  "docs/architecture.md"
+]

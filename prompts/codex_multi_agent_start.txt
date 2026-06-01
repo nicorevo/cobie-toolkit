@@ -1,0 +1,19 @@
+Avvia un workflow multi-agente.
+
+Agenti richiesti:
+- Project Manager Agent
+- COBie Standards Agent
+- Database Architect Agent
+- Supabase Security Agent
+- API Agent
+- React Admin Agent
+- QA Agent
+
+Ogni agente deve produrre handoff secondo agents/HANDOFF_PROTOCOL.md.
+
+Obiettivo primo ciclo:
+- confermare catalogo COBie;
+- validare migrazioni;
+- definire risorse React Admin MVP;
+- definire API REST MVP;
+- produrre checklist di rischio prima dell'implementazione.

@@ -1,0 +1,11 @@
+Leggi AGENTS.md, PROJECT_PLAN.md, REQUIREMENTS.md, docs/architecture.md, docs/security-guardrails.md e agents/AGENT_TASKS.md.
+
+Usa la skill project-orchestrator.
+
+Obiettivo: trasformare questo starter kit in un repository operativo per una SPA React Admin + Supabase/PostgreSQL che gestisca entità COBie e API REST.
+
+Prima di scrivere codice:
+1. crea un piano di esecuzione per Sprint 0 e Sprint 1;
+2. identifica blocchi e ambiguità;
+3. proponi l'ordine degli agenti;
+4. non modificare migration finché non confermi il template COBie di riferimento.
