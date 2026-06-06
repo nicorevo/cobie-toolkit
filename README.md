@@ -51,13 +51,14 @@ Questo kit usa una strategia **sheet-compatible COBie 2.4 UK/Q2 2026**, con pres
 2. Leggi `AGENTS.md`.
 3. Leggi `agents/TEAM.md`.
 4. Fai eseguire a Codex il prompt `prompts/codex_start_project.txt`.
-5. Attiva le skill in `.codex/skills`.
+5. Attiva le skill in `.codex/skills`, incluse le skill COBie locali, le skill `agent-skills` installate da `addyosmani/agent-skills`, le skill Supabase, Mermaid e frontend React/MUI/Vite.
 6. Prima di generare codice reale, fai completare al COBie Standard Agent la verifica del template più recente.
 
 ## File principali
 
 - `AGENTS.md`: regole globali del repository per Codex.
 - `.codex/skills/*/SKILL.md`: skill operative per agenti specializzati.
+- `agents/TEAM.md`: matrice agenti/skill candidate per i workflow multi-agente.
 - `supabase/migrations/`: migrazioni SQL iniziali.
 - `api/openapi.cobie-rest.yaml`: contratto API REST iniziale.
 - `docs/security-guardrails.md`: regole di sicurezza.

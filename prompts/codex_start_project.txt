@@ -1,6 +1,7 @@
 Leggi AGENTS.md, PROJECT_PLAN.md, REQUIREMENTS.md, docs/architecture.md, docs/security-guardrails.md e agents/AGENT_TASKS.md.
 
-Usa la skill project-orchestrator.
+Usa le skill project-orchestrator e using-agent-skills.
+Per ogni agente, scegli il sottoinsieme minimo tra le skill candidate in agents/TEAM.md insieme alle skill COBie locali gia' configurate.
 
 Obiettivo: trasformare questo starter kit in un repository operativo per una SPA React Admin + Supabase/PostgreSQL che gestisca entità COBie e API REST.
 

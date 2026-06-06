@@ -14,6 +14,14 @@ Output:
 - sprint plan;
 - consolidated report.
 
+Skill candidate:
+- `project-orchestrator`
+- `using-agent-skills`
+- `spec-driven-development`
+- `planning-and-task-breakdown`
+- `documentation-and-adrs`
+- `mermaid-syntax`
+
 ## 2. COBie Standards Agent
 
 Responsabilità:
@@ -26,6 +34,14 @@ Output:
 - `reference/cobie_sheet_catalog_*.yaml`;
 - diff template;
 - regole di validazione.
+
+Skill candidate:
+- `cobie-standard-ingestion`
+- `cobie-quality-validation`
+- `using-agent-skills`
+- `source-driven-development`
+- `documentation-and-adrs`
+- `mermaid-syntax`
 
 ## 3. Database Architect Agent
 
@@ -40,6 +56,16 @@ Output:
 - SQL migration;
 - data model docs;
 - ERD testuale.
+
+Skill candidate:
+- `postgres-cobie-modeling`
+- `using-agent-skills`
+- `supabase`
+- `supabase-postgres-best-practices`
+- `api-and-interface-design`
+- `incremental-implementation`
+- `test-driven-development`
+- `mermaid-syntax`
 
 ## 4. Supabase Security Agent
 
@@ -56,6 +82,15 @@ Output:
 - security findings;
 - SQL patch.
 
+Skill candidate:
+- `supabase-rls-security-review`
+- `using-agent-skills`
+- `supabase`
+- `supabase-postgres-best-practices`
+- `security-and-hardening`
+- `doubt-driven-development`
+- `test-driven-development`
+
 ## 5. API Agent
 
 Responsabilità:
@@ -68,6 +103,15 @@ Responsabilità:
 Output:
 - `api/openapi.cobie-rest.yaml`;
 - `api/postgrest-endpoints.md`.
+
+Skill candidate:
+- `rest-api-contract`
+- `using-agent-skills`
+- `supabase`
+- `api-and-interface-design`
+- `source-driven-development`
+- `documentation-and-adrs`
+- `mermaid-syntax`
 
 ## 6. React Admin Agent
 
@@ -85,6 +129,20 @@ Output:
 - resource docs;
 - UI checklist.
 
+Skill candidate:
+- `react-admin-resource`
+- `frontend-grid-strategy`
+- `using-agent-skills`
+- `supabase`
+- `frontend-ui-engineering`
+- `react-dev`
+- `vercel-react-best-practices`
+- `mui`
+- `vite`
+- `web-design-guidelines`
+- `browser-testing-with-devtools`
+- `test-driven-development`
+
 ## 7. Import/Export Agent
 
 Responsabilità:
@@ -99,6 +157,17 @@ Output:
 - parser contract;
 - import/export docs.
 
+Skill candidate:
+- `cobie-import-export`
+- `cobie-standard-ingestion`
+- `cobie-quality-validation`
+- `using-agent-skills`
+- `supabase`
+- `supabase-postgres-best-practices`
+- `api-and-interface-design`
+- `incremental-implementation`
+- `mermaid-syntax`
+
 ## 8. QA Agent
 
 Responsabilità:
@@ -111,3 +180,15 @@ Responsabilità:
 Output:
 - test suite;
 - checklist release.
+
+Skill candidate:
+- `cobie-quality-validation`
+- `using-agent-skills`
+- `test-driven-development`
+- `debugging-and-error-recovery`
+- `code-review-and-quality`
+- `security-and-hardening`
+- `vercel-react-best-practices`
+- `web-design-guidelines`
+- `supabase`
+- `supabase-postgres-best-practices`

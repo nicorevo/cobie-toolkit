@@ -10,6 +10,8 @@ project_doc_fallback_filenames = [
   "AGENTS.md",
   "PROJECT_PLAN.md",
   "REQUIREMENTS.md",
+  "agents/TEAM.md",
+  "agents/HANDOFF_PROTOCOL.md",
   "docs/security-guardrails.md",
   "docs/data-model-cobie.md",
   "docs/architecture.md"

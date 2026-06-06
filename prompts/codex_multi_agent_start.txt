@@ -1,5 +1,7 @@
 Avvia un workflow multi-agente.
 
+Usa la skill using-agent-skills per selezionare il workflow trasversale corretto e scegli il sottoinsieme minimo dalla matrice skill in agents/TEAM.md.
+
 Agenti richiesti:
 - Project Manager Agent
 - COBie Standards Agent
@@ -7,9 +9,11 @@ Agenti richiesti:
 - Supabase Security Agent
 - API Agent
 - React Admin Agent
+- Import/Export Agent
 - QA Agent
 
 Ogni agente deve produrre handoff secondo agents/HANDOFF_PROTOCOL.md.
+Ogni handoff deve includere Skills used e Recommended next skills.
 
 Obiettivo primo ciclo:
 - confermare catalogo COBie;

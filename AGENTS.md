@@ -35,6 +35,20 @@ Costruire un frontend React Admin e un modello PostgreSQL/Supabase per alimentar
 - Non introdurre backend custom finché Supabase REST/RPC/Edge Functions bastano.
 - Usare Edge Functions per import/export, operazioni privilegiate, segreti, integrazioni esterne e transazioni complesse.
 
+## Regole skill agentiche
+
+- Prima di iniziare un task non banale, usare `using-agent-skills` per scegliere il sottoinsieme minimo di skill applicabili.
+- Le skill COBie locali restano autorevoli per dominio, sicurezza Supabase, React Admin e import/export COBie.
+- Le skill di workflow installate in `.codex/skills` vanno usate come supporto trasversale: spec, pianificazione, implementazione incrementale, test, review, sicurezza, performance, documentazione e shipping.
+- Per task Supabase usare anche `supabase`; per SQL, migrazioni, indici, performance PostgreSQL o RLS usare anche `supabase-postgres-best-practices`.
+- Per diagrammi Mermaid, ERD, flowchart, sequence diagram, Gantt o diagrammi architetturali usare `mermaid-syntax`.
+- Per frontend React usare anche `react-dev` e `vercel-react-best-practices`; per Material UI usare `mui`; per configurazione/build Vite usare `vite`; per audit UI/accessibilità usare `web-design-guidelines`.
+- Se una skill frontend include pattern Next.js, SSR, Server Components o React Native, ignorarli per questo progetto: valgono solo le parti compatibili con SPA Vite + React Admin + MUI.
+- Prima di applicare pattern legati a versioni specifiche, verificare `package.json` o la documentazione locale: non assumere React 19, MUI v7 o Vite 8 se il progetto non li dichiara.
+- Le skill elencate in `agents/TEAM.md` sono candidate per ruolo, non una lista da caricare integralmente a ogni task.
+- Ogni agente deve dichiarare nel proprio handoff le skill usate e quelle raccomandate per l'agente successivo.
+- Quando una skill entra in conflitto con una regola COBie/Supabase di questo repository, prevalgono `AGENTS.md`, le skill COBie locali e le policy RLS del database.
+
 ## Regole COBie
 
 - Non inventare campi COBie definitivi: leggere il template XLTX di riferimento.
