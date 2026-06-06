@@ -78,6 +78,8 @@ Costruire un frontend React Admin e un modello PostgreSQL/Supabase per alimentar
 
 - Usare `VITE_SUPABASE_URL`.
 - Usare `VITE_SUPABASE_PUBLISHABLE_KEY`.
+- Le credenziali locali possono stare in `.env` o `frontend/.env.local`, ma questi file devono restare ignorati da git.
+- Chiedere credenziali reali solo quando servono per verificare funzionamento Supabase/Auth/API/Edge Functions, non durante analisi, spec o scaffold.
 - Non usare variabili `NEXT_PUBLIC_*`.
 - Tenere il Supabase client in `src/lib/supabase/client.ts`.
 - Tenere tipi generati in `src/lib/supabase/types.ts`.
@@ -114,6 +116,7 @@ Prima di completare una modifica:
 ## Divieti
 
 - Non committare `.env` con valori reali.
+- Mantenere versionabile solo `.env.example`.
 - Non mettere service keys nel codice frontend.
 - Non fare reset distruttivi del DB senza richiesta esplicita.
 - Non caricare interi workbook grandi nel browser per processing serio.
