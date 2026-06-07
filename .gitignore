@@ -16,6 +16,7 @@ frontend/dist/
 
 # Local generated artifacts
 .local/
+supabase/.temp/
 
 # Logs
 *.log

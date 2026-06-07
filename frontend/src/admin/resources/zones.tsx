@@ -12,56 +12,45 @@ import {
   TextInput,
 } from 'react-admin';
 
-const facilityFilters = [
+const zoneFilters = [
   <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
   <TextInput key="category" source="category" label="Category" />,
-  <TextInput key="project_name" source="project_name@ilike" label="Project" />,
 ];
 
 const requiredField = [required()];
 
-function FacilityForm() {
+function ZoneForm() {
   return (
     <SimpleForm>
       <TextInput source="organization_id" validate={requiredField} fullWidth />
       <TextInput source="workbook_id" validate={requiredField} fullWidth />
       <TextInput source="name" validate={requiredField} fullWidth />
       <TextInput source="category" fullWidth />
-      <TextInput source="project_name" fullWidth />
-      <TextInput source="project_description" fullWidth multiline />
-      <TextInput source="site_name" fullWidth />
-      <TextInput source="site_description" fullWidth multiline />
-      <TextInput source="phase" fullWidth />
-      <TextInput source="linear_units" fullWidth />
-      <TextInput source="area_units" fullWidth />
-      <TextInput source="area_measurement" fullWidth />
-      <TextInput source="volume_units" fullWidth />
-      <TextInput source="currency_unit" fullWidth />
+      <TextInput source="space_names" fullWidth multiline />
       <TextInput source="description" fullWidth multiline />
     </SimpleForm>
   );
 }
 
-export function FacilityList() {
+export function ZoneList() {
   return (
     <List
-      filters={facilityFilters}
+      filters={zoneFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
         <TextField source="category" />
-        <TextField source="project_name" />
-        <TextField source="site_name" />
-        <TextField source="phase" />
+        <TextField source="space_names" />
+        <TextField source="description" />
       </Datagrid>
     </List>
   );
 }
 
-export function FacilityShow() {
+export function ZoneShow() {
   return (
     <Show>
       <SimpleShowLayout>
@@ -70,17 +59,13 @@ export function FacilityShow() {
         <TextField source="workbook_id" />
         <TextField source="name" />
         <TextField source="category" />
-        <TextField source="project_name" />
-        <TextField source="project_description" />
-        <TextField source="site_name" />
-        <TextField source="site_description" />
-        <TextField source="phase" />
-        <TextField source="linear_units" />
-        <TextField source="area_units" />
-        <TextField source="area_measurement" />
-        <TextField source="volume_units" />
-        <TextField source="currency_unit" />
+        <TextField source="space_names" />
         <TextField source="description" />
+        <TextField source="external_system" />
+        <TextField source="external_identifier" />
+        <TextField source="external_object" />
+        <TextField source="source_sheet" />
+        <TextField source="source_row_number" />
         <DateField source="inserted_at" showTime />
         <DateField source="updated_at" showTime />
       </SimpleShowLayout>
@@ -88,18 +73,18 @@ export function FacilityShow() {
   );
 }
 
-export function FacilityCreate() {
+export function ZoneCreate() {
   return (
     <Create>
-      <FacilityForm />
+      <ZoneForm />
     </Create>
   );
 }
 
-export function FacilityEdit() {
+export function ZoneEdit() {
   return (
     <Edit>
-      <FacilityForm />
+      <ZoneForm />
     </Edit>
   );
 }

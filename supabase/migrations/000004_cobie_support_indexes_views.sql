@@ -23,7 +23,8 @@ create index if not exists idx_document_target on cobie.document(workbook_id, sh
 -- API read models.
 -- PostgREST can expose views if schema api is enabled.
 
-create or replace view api.cobie_assets as
+create or replace view api.cobie_assets
+with (security_invoker = true) as
 select
   c.id,
   c.organization_id,
@@ -47,7 +48,8 @@ left join cobie.space s
   on s.workbook_id = c.workbook_id
  and s.name = c.space_name;
 
-create or replace view api.cobie_space_index as
+create or replace view api.cobie_space_index
+with (security_invoker = true) as
 select
   s.id,
   s.organization_id,
@@ -65,7 +67,8 @@ left join cobie.floor f
   on f.workbook_id = s.workbook_id
  and f.name = s.floor_name;
 
-create or replace view api.cobie_document_index as
+create or replace view api.cobie_document_index
+with (security_invoker = true) as
 select
   d.id,
   d.organization_id,

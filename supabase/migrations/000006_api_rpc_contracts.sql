@@ -33,10 +33,28 @@ returns table (
   field_name text,
   message text
 )
-language sql
+language plpgsql
 security invoker
 as $$
-  select *
-  from api.cobie_validation_issues
-  where workbook_id = p_workbook_id;
+begin
+  if not exists (
+    select 1
+    from cobie.workbook w
+    where w.id = p_workbook_id
+      and app.is_org_member(w.organization_id)
+  ) then
+    return;
+  end if;
+
+  return query
+  select
+    v.severity,
+    v.rule_id,
+    v.sheet_name,
+    v.row_name,
+    v.field_name,
+    v.message
+  from api.cobie_validation_issues v
+  where v.workbook_id = p_workbook_id;
+end;
 $$;

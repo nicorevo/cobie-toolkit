@@ -35,6 +35,12 @@ Costruire un frontend React Admin e un modello PostgreSQL/Supabase per alimentar
 - Non introdurre backend custom finché Supabase REST/RPC/Edge Functions bastano.
 - Usare Edge Functions per import/export, operazioni privilegiate, segreti, integrazioni esterne e transazioni complesse.
 
+## Regole operative agentiche
+
+- Parallelizzare sempre quando possibile letture, audit indipendenti, verifiche non conflittuali e task che non toccano gli stessi file.
+- Non parallelizzare modifiche sequenziali o ad alto rischio: migration, RLS/security policy, file condivisi senza coordinamento, comandi distruttivi o step che dipendono dall'esito dello step precedente.
+- Quando un piano definisce task parallelizzabili, preferire l'esecuzione parallela e documentare eventuali eccezioni.
+
 ## Regole skill agentiche
 
 - Prima di iniziare un task non banale, usare `using-agent-skills` per scegliere il sottoinsieme minimo di skill applicabili.

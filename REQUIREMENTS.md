@@ -1,6 +1,6 @@
 # Specifica funzionale raffinata
 
-Stato: Draft da validare prima di passare a PLAN/TASKS.
+Stato: Approvata per planning/implementazione Fase 1 il 2026-06-06.
 
 ## Obiettivo
 
@@ -402,13 +402,10 @@ Never:
 - Commit da staging a tabelle COBie preserva `raw_row`.
 - Export produce workbook compatibile col catalogo di riferimento e disponibile via signed URL temporaneo.
 
-## Open questions
+## Follow-up non bloccanti
 
-- Quali ruoli applicativi servono oltre alla membership organizzativa base?
-- Le Create/Edit React Admin sono necessarie per tutte le risorse MVP o alcune devono essere read-only in Fase 1?
-- Il delete deve essere fisico, soft delete o assente per le entita COBie?
-- Quale set minimo di campi deve apparire nella List e nelle form di ogni risorsa MVP?
-- Il catalogo COBie Q2 2026 e gia congelato o va riconfermato prima di ogni modifica schema?
-- `ra-supabase` copre i filtri/reference necessari o va pianificato un dataProvider custom?
-- I documenti Fase 1 sono solo metadata COBie o includono anche allegati file?
-- Quali regole contrattuali/progetto devono essere distinte dalle obbligatorieta COBie standard?
+- Produrre `docs/mvp-resource-matrix.md` con campi List/Create/Edit/Filter per ogni resource.
+- Rivedere il diff del template COBie Q2 2026 prima di modificare catalogo definitivo o schema.
+- Verificare `ra-supabase` nel Task 9 e introdurre dataProvider custom solo se necessario.
+- Definire regole contrattuali/progetto in una matrice separata dopo il MVP.
+- Decidere modello delete/soft delete prima di un rilascio produttivo; nel MVP la UI non espone delete.

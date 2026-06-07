@@ -106,6 +106,8 @@ Deliverable:
 
 ## 7. Piano per sprint
 
+Il breakdown operativo dettagliato del MVP è in `docs/implementation-plan-mvp.md`.
+
 ### Sprint 0: decisioni e standard
 
 - Confermare template COBie più recente.

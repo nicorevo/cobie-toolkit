@@ -1,4 +1,5 @@
-create or replace view api.cobie_validation_issues as
+create or replace view api.cobie_validation_issues
+with (security_invoker = true) as
 select
   c.organization_id,
   c.workbook_id,

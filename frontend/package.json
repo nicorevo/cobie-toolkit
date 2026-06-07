@@ -24,10 +24,13 @@
     "react-router-dom": "latest"
   },
   "devDependencies": {
+    "@eslint/js": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
     "@vitejs/plugin-react": "latest",
     "typescript": "latest",
+    "typescript-eslint": "latest",
+    "globals": "latest",
     "vite": "latest",
     "eslint": "latest"
   }

@@ -3,21 +3,42 @@ info:
   title: COBie Supabase REST API
   version: 0.1.0
   description: >
-    Contratto iniziale per API REST COBie esposte tramite Supabase/PostgREST.
-    Gli endpoint reali dipendono dagli schemi esposti e dalle policy RLS.
+    MVP REST contract for COBie data exposed through Supabase/PostgREST.
+    The `api` schema is the default profile. COBie tables require the
+    `cobie` profile and application membership tables require the `app`
+    profile. PostgreSQL RLS remains the authorization boundary.
 servers:
+  - url: http://127.0.0.1:54321/rest/v1
+    description: Local Supabase stack
   - url: https://{projectRef}.supabase.co/rest/v1
+    description: Hosted Supabase project
     variables:
       projectRef:
         default: example
 security:
   - SupabaseAuth: []
+    SupabaseApiKey: []
+tags:
+  - name: API read models
+    description: Read-only views in the default `api` schema.
+  - name: COBie tables
+    description: Sheet-compatible tables in the `cobie` schema.
+  - name: App tables
+    description: Application tenant membership tables in the `app` schema.
+  - name: RPC
+    description: Transactional operations exposed as PostgREST RPC endpoints.
 components:
   securitySchemes:
     SupabaseAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+      bearerFormat: Supabase JWT
+      description: Supabase user access token.
+    SupabaseApiKey:
+      type: apiKey
+      in: header
+      name: apikey
+      description: Supabase publishable key. It is not an authorization boundary.
   parameters:
     Range:
       name: Range
@@ -26,75 +47,1123 @@ components:
       schema:
         type: string
       example: "0-49"
+      description: PostgREST range pagination.
     PreferCount:
       name: Prefer
       in: header
       required: false
       schema:
         type: string
-      example: "count=exact"
+      example: count=exact
+      description: Request count metadata for paginated lists.
+    PreferRepresentation:
+      name: Prefer
+      in: header
+      required: false
+      schema:
+        type: string
+      example: return=representation
+      description: Return inserted or updated rows.
+    AcceptProfileCobie:
+      name: Accept-Profile
+      in: header
+      required: true
+      schema:
+        type: string
+        enum:
+          - cobie
+      description: Selects the `cobie` PostgREST schema profile.
+    ContentProfileCobie:
+      name: Content-Profile
+      in: header
+      required: true
+      schema:
+        type: string
+        enum:
+          - cobie
+      description: Writes to the `cobie` PostgREST schema profile.
+    AcceptProfileApp:
+      name: Accept-Profile
+      in: header
+      required: true
+      schema:
+        type: string
+        enum:
+          - app
+      description: Selects the `app` PostgREST schema profile.
+    Select:
+      name: select
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "*"
+      description: PostgREST projection expression.
+    Order:
+      name: order
+      in: query
+      required: false
+      schema:
+        type: string
+      example: name.asc
+      description: PostgREST sort expression.
+    IdFilter:
+      name: id
+      in: query
+      required: false
+      schema:
+        type: string
+      example: eq.11111111-1111-1111-1111-111111111111
+      description: PostgREST filter, commonly required for PATCH.
+    OrganizationFilter:
+      name: organization_id
+      in: query
+      required: false
+      schema:
+        type: string
+      example: eq.11111111-1111-1111-1111-111111111111
+      description: Tenant organization filter.
+    WorkbookFilter:
+      name: workbook_id
+      in: query
+      required: false
+      schema:
+        type: string
+      example: eq.22222222-2222-2222-2222-222222222222
+      description: COBie workbook filter.
+    NameFilter:
+      name: name
+      in: query
+      required: false
+      schema:
+        type: string
+      example: ilike.*pump*
+      description: Common textual name filter.
+  schemas:
+    JsonObject:
+      type: object
+      additionalProperties: true
+    PostgrestError:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          oneOf:
+            - type: string
+            - type: object
+              additionalProperties: true
+          nullable: true
+        hint:
+          type: string
+          nullable: true
+      required:
+        - code
+        - message
+    Workbook:
+      type: object
+      additionalProperties: true
+      properties:
+        id:
+          type: string
+          format: uuid
+        organization_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        standard_version:
+          type: string
+          nullable: true
+        template_name:
+          type: string
+          nullable: true
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ValidationIssue:
+      type: object
+      properties:
+        severity:
+          type: string
+        rule_id:
+          type: string
+        sheet_name:
+          type: string
+          nullable: true
+        row_name:
+          type: string
+          nullable: true
+        field_name:
+          type: string
+          nullable: true
+        message:
+          type: string
+      required:
+        - severity
+        - rule_id
+        - message
+    CreateWorkbookArgs:
+      type: object
+      properties:
+        p_organization_id:
+          type: string
+          format: uuid
+        p_name:
+          type: string
+        p_template_name:
+          type: string
+          nullable: true
+      required:
+        - p_organization_id
+        - p_name
+    ValidateWorkbookArgs:
+      type: object
+      properties:
+        p_workbook_id:
+          type: string
+          format: uuid
+      required:
+        - p_workbook_id
+  requestBodies:
+    WorkbookInsert:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/JsonObject'
+              - type: object
+                properties:
+                  organization_id:
+                    type: string
+                    format: uuid
+                  name:
+                    type: string
+                required:
+                  - organization_id
+                  - name
+          example:
+            organization_id: 11111111-1111-1111-1111-111111111111
+            name: New COBie Workbook
+            template_name: COBie Template Q2 April 2026
+    GenericCobieInsert:
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/JsonObject'
+              - type: object
+                properties:
+                  organization_id:
+                    type: string
+                    format: uuid
+                  workbook_id:
+                    type: string
+                    format: uuid
+                required:
+                  - organization_id
+                  - workbook_id
+          examples:
+            component:
+              value:
+                organization_id: 11111111-1111-1111-1111-111111111111
+                workbook_id: 22222222-2222-2222-2222-222222222222
+                name: AHU-01
+                type_name: Air Handling Unit Type A
+    GenericPatch:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/JsonObject'
+          example:
+            description: Updated description
+  responses:
+    RowList:
+      description: Rows visible to the authenticated user after RLS.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/JsonObject'
+    MutationRows:
+      description: "Rows inserted or updated when `Prefer: return=representation` is used."
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/JsonObject'
+    Unauthorized:
+      description: Missing or invalid Supabase user session.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostgrestError'
+    Forbidden:
+      description: Authenticated user is not authorized by grants or RLS.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/PostgrestError'
+
 paths:
-  /workbook:
-    get:
-      summary: List COBie workbooks
-      parameters:
-        - $ref: '#/components/parameters/Range'
-        - $ref: '#/components/parameters/PreferCount'
-      responses:
-        '200':
-          description: Workbooks visible by RLS
-    post:
-      summary: Create COBie workbook
-      responses:
-        '201':
-          description: Created
-  /component:
-    get:
-      summary: List COBie components/assets
-      parameters:
-        - $ref: '#/components/parameters/Range'
-        - $ref: '#/components/parameters/PreferCount'
-      responses:
-        '200':
-          description: Components visible by RLS
-    post:
-      summary: Create COBie component
-      responses:
-        '201':
-          description: Created
-  /type:
-    get:
-      summary: List COBie types
-      responses:
-        '200':
-          description: Types visible by RLS
-  /facility:
-    get:
-      summary: List COBie facilities
-      responses:
-        '200':
-          description: Facilities visible by RLS
-  /space:
-    get:
-      summary: List COBie spaces
-      responses:
-        '200':
-          description: Spaces visible by RLS
   /cobie_assets:
     get:
-      summary: Read model joining components, types and spaces
+      tags:
+        - API read models
+      summary: List COBie asset read model rows
+      description: Read-only view joining components, types and spaces. RLS is enforced through `security_invoker`.
+      parameters:
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
       responses:
         '200':
-          description: Asset read model visible by RLS
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /cobie_space_index:
+    get:
+      tags:
+        - API read models
+      summary: List COBie space index rows
+      description: Read-only view for spaces with floor category context.
+      parameters:
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /cobie_document_index:
+    get:
+      tags:
+        - API read models
+      summary: List COBie document index rows
+      description: Read-only view for document metadata.
+      parameters:
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /cobie_validation_issues:
+    get:
+      tags:
+        - API read models
+      summary: List COBie validation issue rows
+      description: Read-only validation diagnostics visible through tenant RLS.
+      parameters:
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /workbook:
+    get:
+      tags:
+        - COBie tables
+      summary: List workbooks
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/OrganizationFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create workbook metadata directly
+      description: Prefer `/rpc/create_workbook` for React Admin create flows.
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/WorkbookInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update workbook metadata
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /contact:
+    get:
+      tags:
+        - COBie tables
+      summary: List contacts
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create contact
+      description: Write is accepted only when `app.is_valid_cobie_scope(organization_id, workbook_id)` passes.
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update contact
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /facility:
+    get:
+      tags:
+        - COBie tables
+      summary: List facilities
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create facility
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update facility
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /floor:
+    get:
+      tags:
+        - COBie tables
+      summary: List floors
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create floor
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update floor
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /space:
+    get:
+      tags:
+        - COBie tables
+      summary: List spaces
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create space
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update space
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /zone:
+    get:
+      tags:
+        - COBie tables
+      summary: List zones
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create zone
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update zone
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /type:
+    get:
+      tags:
+        - COBie tables
+      summary: List types
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create type
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update type
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /component:
+    get:
+      tags:
+        - COBie tables
+      summary: List components
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create component
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update component
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /system:
+    get:
+      tags:
+        - COBie tables
+      summary: List systems
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create system
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update system
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /attribute:
+    get:
+      tags:
+        - COBie tables
+      summary: List attributes
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create attribute
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update attribute
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /document:
+    get:
+      tags:
+        - COBie tables
+      summary: List documents
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    post:
+      tags:
+        - COBie tables
+      summary: Create document metadata
+      parameters:
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericCobieInsert'
+      responses:
+        '201':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+    patch:
+      tags:
+        - COBie tables
+      summary: Update document metadata
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/ContentProfileCobie'
+        - $ref: '#/components/parameters/IdFilter'
+        - $ref: '#/components/parameters/PreferRepresentation'
+      requestBody:
+        $ref: '#/components/requestBodies/GenericPatch'
+      responses:
+        '200':
+          $ref: '#/components/responses/MutationRows'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /job:
+    get:
+      tags:
+        - COBie tables
+      summary: List jobs
+      description: MVP UI treats this resource as read-only.
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /resource:
+    get:
+      tags:
+        - COBie tables
+      summary: List resources
+      description: MVP UI treats this resource as read-only.
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /issue:
+    get:
+      tags:
+        - COBie tables
+      summary: List issues
+      description: MVP UI treats this resource as read-only.
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/NameFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /picklist:
+    get:
+      tags:
+        - COBie tables
+      summary: List picklist values
+      description: MVP UI treats this resource as read-only pending template mapping reconciliation.
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileCobie'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/WorkbookFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /organizations:
+    get:
+      tags:
+        - App tables
+      summary: List organizations visible to the authenticated user
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileApp'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+  /organization_members:
+    get:
+      tags:
+        - App tables
+      summary: List organization memberships visible to organization members
+      parameters:
+        - $ref: '#/components/parameters/AcceptProfileApp'
+        - $ref: '#/components/parameters/Select'
+        - $ref: '#/components/parameters/OrganizationFilter'
+        - $ref: '#/components/parameters/Order'
+        - $ref: '#/components/parameters/Range'
+        - $ref: '#/components/parameters/PreferCount'
+      responses:
+        '200':
+          $ref: '#/components/responses/RowList'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
   /rpc/create_workbook:
     post:
-      summary: Create workbook through RPC
+      tags:
+        - RPC
+      summary: Create workbook through checked RPC
+      description: Creates a workbook only when `auth.uid()` is a member of `p_organization_id`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWorkbookArgs'
+            example:
+              p_organization_id: 11111111-1111-1111-1111-111111111111
+              p_name: New COBie Workbook
+              p_template_name: COBie Template Q2 April 2026
       responses:
         '200':
-          description: Created workbook
+          description: Created workbook row.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Workbook'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
   /rpc/validate_workbook:
     post:
-      summary: Return validation issues for workbook
+      tags:
+        - RPC
+      summary: Validate a workbook
+      description: Returns validation rows only when the authenticated user is a member of the workbook organization.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateWorkbookArgs'
+            example:
+              p_workbook_id: 22222222-2222-2222-2222-222222222222
       responses:
         '200':
-          description: Validation issue list
+          description: Validation issues visible to the authenticated user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationIssue'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'

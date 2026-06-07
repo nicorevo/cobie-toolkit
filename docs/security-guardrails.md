@@ -45,3 +45,14 @@ Le Edge Functions con privilegi devono:
 - usare service role solo internamente;
 - loggare senza secret;
 - restituire errori non verbosi.
+
+## Import/export
+
+- Usare bucket Storage privato per workbook sorgenti, report e export generati.
+- Non esporre lo schema staging tramite PostgREST.
+- Mettere batch, righe staging, issue report ed export job in uno schema non esposto, ad esempio `cobie_io`.
+- Esporre solo viste/RPC `api` con controllo membership reale.
+- Validare membership e ruolo prima di creare batch, leggere file, processare import, committare o generare export.
+- Usare service role solo dentro Edge Function/worker dopo la validazione del chiamante.
+- Non loggare signed URL, JWT, service key o contenuto raw del workbook.
+- Non abilitare replace/delete di workbook esistenti finche soft delete, audit e rollback non sono progettati.

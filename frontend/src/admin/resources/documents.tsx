@@ -12,56 +12,56 @@ import {
   TextInput,
 } from 'react-admin';
 
-const facilityFilters = [
+const documentFilters = [
   <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <TextInput key="sheet_name" source="sheet_name" label="Sheet" />,
+  <TextInput key="row_name" source="row_name@ilike" label="Row" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
   <TextInput key="category" source="category" label="Category" />,
-  <TextInput key="project_name" source="project_name@ilike" label="Project" />,
+  <TextInput key="stage" source="stage" label="Stage" />,
 ];
 
 const requiredField = [required()];
 
-function FacilityForm() {
+function DocumentForm() {
   return (
     <SimpleForm>
       <TextInput source="organization_id" validate={requiredField} fullWidth />
       <TextInput source="workbook_id" validate={requiredField} fullWidth />
       <TextInput source="name" validate={requiredField} fullWidth />
       <TextInput source="category" fullWidth />
-      <TextInput source="project_name" fullWidth />
-      <TextInput source="project_description" fullWidth multiline />
-      <TextInput source="site_name" fullWidth />
-      <TextInput source="site_description" fullWidth multiline />
-      <TextInput source="phase" fullWidth />
-      <TextInput source="linear_units" fullWidth />
-      <TextInput source="area_units" fullWidth />
-      <TextInput source="area_measurement" fullWidth />
-      <TextInput source="volume_units" fullWidth />
-      <TextInput source="currency_unit" fullWidth />
+      <TextInput source="approval_by" fullWidth />
+      <TextInput source="stage" fullWidth />
+      <TextInput source="sheet_name" fullWidth />
+      <TextInput source="row_name" fullWidth />
+      <TextInput source="directory" fullWidth />
+      <TextInput source="file" fullWidth />
+      <TextInput source="reference" fullWidth />
       <TextInput source="description" fullWidth multiline />
     </SimpleForm>
   );
 }
 
-export function FacilityList() {
+export function DocumentList() {
   return (
     <List
-      filters={facilityFilters}
+      filters={documentFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
         <TextField source="category" />
-        <TextField source="project_name" />
-        <TextField source="site_name" />
-        <TextField source="phase" />
+        <TextField source="sheet_name" />
+        <TextField source="row_name" />
+        <TextField source="file" />
+        <TextField source="reference" />
       </Datagrid>
     </List>
   );
 }
 
-export function FacilityShow() {
+export function DocumentShow() {
   return (
     <Show>
       <SimpleShowLayout>
@@ -70,17 +70,19 @@ export function FacilityShow() {
         <TextField source="workbook_id" />
         <TextField source="name" />
         <TextField source="category" />
-        <TextField source="project_name" />
-        <TextField source="project_description" />
-        <TextField source="site_name" />
-        <TextField source="site_description" />
-        <TextField source="phase" />
-        <TextField source="linear_units" />
-        <TextField source="area_units" />
-        <TextField source="area_measurement" />
-        <TextField source="volume_units" />
-        <TextField source="currency_unit" />
+        <TextField source="approval_by" />
+        <TextField source="stage" />
+        <TextField source="sheet_name" />
+        <TextField source="row_name" />
+        <TextField source="directory" />
+        <TextField source="file" />
+        <TextField source="reference" />
         <TextField source="description" />
+        <TextField source="external_system" />
+        <TextField source="external_identifier" />
+        <TextField source="external_object" />
+        <TextField source="source_sheet" />
+        <TextField source="source_row_number" />
         <DateField source="inserted_at" showTime />
         <DateField source="updated_at" showTime />
       </SimpleShowLayout>
@@ -88,18 +90,18 @@ export function FacilityShow() {
   );
 }
 
-export function FacilityCreate() {
+export function DocumentCreate() {
   return (
     <Create>
-      <FacilityForm />
+      <DocumentForm />
     </Create>
   );
 }
 
-export function FacilityEdit() {
+export function DocumentEdit() {
   return (
     <Edit>
-      <FacilityForm />
+      <DocumentForm />
     </Edit>
   );
 }

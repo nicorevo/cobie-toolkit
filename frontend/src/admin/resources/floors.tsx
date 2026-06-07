@@ -12,56 +12,47 @@ import {
   TextInput,
 } from 'react-admin';
 
-const facilityFilters = [
+const floorFilters = [
   <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
   <TextInput key="category" source="category" label="Category" />,
-  <TextInput key="project_name" source="project_name@ilike" label="Project" />,
 ];
 
 const requiredField = [required()];
 
-function FacilityForm() {
+function FloorForm() {
   return (
     <SimpleForm>
       <TextInput source="organization_id" validate={requiredField} fullWidth />
       <TextInput source="workbook_id" validate={requiredField} fullWidth />
       <TextInput source="name" validate={requiredField} fullWidth />
       <TextInput source="category" fullWidth />
-      <TextInput source="project_name" fullWidth />
-      <TextInput source="project_description" fullWidth multiline />
-      <TextInput source="site_name" fullWidth />
-      <TextInput source="site_description" fullWidth multiline />
-      <TextInput source="phase" fullWidth />
-      <TextInput source="linear_units" fullWidth />
-      <TextInput source="area_units" fullWidth />
-      <TextInput source="area_measurement" fullWidth />
-      <TextInput source="volume_units" fullWidth />
-      <TextInput source="currency_unit" fullWidth />
+      <TextInput source="elevation" fullWidth />
+      <TextInput source="height" fullWidth />
       <TextInput source="description" fullWidth multiline />
     </SimpleForm>
   );
 }
 
-export function FacilityList() {
+export function FloorList() {
   return (
     <List
-      filters={facilityFilters}
+      filters={floorFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
         <TextField source="category" />
-        <TextField source="project_name" />
-        <TextField source="site_name" />
-        <TextField source="phase" />
+        <TextField source="elevation" />
+        <TextField source="height" />
+        <TextField source="description" />
       </Datagrid>
     </List>
   );
 }
 
-export function FacilityShow() {
+export function FloorShow() {
   return (
     <Show>
       <SimpleShowLayout>
@@ -70,16 +61,8 @@ export function FacilityShow() {
         <TextField source="workbook_id" />
         <TextField source="name" />
         <TextField source="category" />
-        <TextField source="project_name" />
-        <TextField source="project_description" />
-        <TextField source="site_name" />
-        <TextField source="site_description" />
-        <TextField source="phase" />
-        <TextField source="linear_units" />
-        <TextField source="area_units" />
-        <TextField source="area_measurement" />
-        <TextField source="volume_units" />
-        <TextField source="currency_unit" />
+        <TextField source="elevation" />
+        <TextField source="height" />
         <TextField source="description" />
         <DateField source="inserted_at" showTime />
         <DateField source="updated_at" showTime />
@@ -88,18 +71,18 @@ export function FacilityShow() {
   );
 }
 
-export function FacilityCreate() {
+export function FloorCreate() {
   return (
     <Create>
-      <FacilityForm />
+      <FloorForm />
     </Create>
   );
 }
 
-export function FacilityEdit() {
+export function FloorEdit() {
   return (
     <Edit>
-      <FacilityForm />
+      <FloorForm />
     </Edit>
   );
 }
