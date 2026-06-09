@@ -12,9 +12,18 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const contactFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="email" source="email@ilike" label="Email" alwaysOn />,
   <TextInput key="company" source="company@ilike" label="Company" />,
   <TextInput
@@ -29,10 +38,15 @@ const requiredField = [required()];
 function ContactForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="email" fullWidth />
-      <TextInput source="category" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="category_contact_id"
+        reference="category_contact"
+        optionText="category_name"
+        label="Category"
+      />
       <TextInput source="company" fullWidth />
       <TextInput source="phone" fullWidth />
       <TextInput source="department" fullWidth />
@@ -72,10 +86,15 @@ export function ContactShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <EmailField source="email" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_contact_id"
+          reference="category_contact"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="company" />
         <TextField source="phone" />
         <TextField source="department" />

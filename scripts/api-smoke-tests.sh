@@ -26,6 +26,8 @@ JOB_A="80000000-0000-4000-8000-000000000007"
 RESOURCE_A="80000000-0000-4000-8000-000000000008"
 ISSUE_A="80000000-0000-4000-8000-000000000009"
 PICKLIST_A="80000000-0000-4000-8000-000000000010"
+FLOOR_A="80000000-0000-4000-8000-000000000011"
+SPACE_A="80000000-0000-4000-8000-000000000012"
 COMPONENT_A="90000000-0000-4000-8000-000000000001"
 COMPONENT_B="90000000-0000-4000-8000-000000000002"
 COMPONENT_CREATED="90000000-0000-4000-8000-000000000011"
@@ -68,6 +70,8 @@ delete from cobie.document where id = '$DOCUMENT_A';
 delete from cobie.attribute where id = '$ATTRIBUTE_A';
 delete from cobie.system where id = '$SYSTEM_A';
 delete from cobie.zone where id = '$ZONE_A';
+delete from cobie.space where id = '$SPACE_A';
+delete from cobie.floor where id = '$FLOOR_A';
 delete from cobie.facility where id = '$FACILITY_A';
 delete from cobie.type where id = '$TYPE_A';
 delete from cobie.contact where id = '$CONTACT_A';
@@ -159,8 +163,6 @@ insert into cobie.type (
   organization_id,
   workbook_id,
   name,
-  category,
-  asset_type,
   manufacturer
 )
 values (
@@ -168,8 +170,6 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Type A',
-  'SmokeCategory',
-  'Asset',
   'Smoke Manufacturer'
 );
 
@@ -178,7 +178,6 @@ insert into cobie.facility (
   organization_id,
   workbook_id,
   name,
-  category,
   project_name,
   site_name
 )
@@ -187,9 +186,36 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Facility A',
-  'SmokeCategory',
   'API Smoke Project',
   'API Smoke Site'
+);
+
+insert into cobie.floor (
+  id,
+  organization_id,
+  workbook_id,
+  name
+)
+values (
+  '$FLOOR_A',
+  '$ORG_A',
+  '$WORKBOOK_A',
+  'API Smoke Floor A'
+);
+
+insert into cobie.space (
+  id,
+  organization_id,
+  workbook_id,
+  name,
+  floor_id
+)
+values (
+  '$SPACE_A',
+  '$ORG_A',
+  '$WORKBOOK_A',
+  'API Smoke Space A',
+  '$FLOOR_A'
 );
 
 insert into cobie.zone (
@@ -197,8 +223,6 @@ insert into cobie.zone (
   organization_id,
   workbook_id,
   name,
-  category,
-  space_names,
   description
 )
 values (
@@ -206,8 +230,6 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Zone A',
-  'SmokeCategory',
-  'API Smoke Space A',
   'Tenant A zone'
 );
 
@@ -216,8 +238,7 @@ insert into cobie.component (
   organization_id,
   workbook_id,
   name,
-  type_name,
-  space_name,
+  type_id,
   description
 )
 values
@@ -226,8 +247,7 @@ values
     '$ORG_A',
     '$WORKBOOK_A',
     'API Smoke Component A',
-    'Missing API Smoke Type',
-    'Missing API Smoke Space',
+    null,
     'Tenant A component'
   ),
   (
@@ -236,17 +256,27 @@ values
     '$WORKBOOK_B',
     'API Smoke Component B',
     null,
-    null,
     'Tenant B component'
   );
+
+insert into cobie.component_space (
+  organization_id,
+  workbook_id,
+  component_id,
+  space_id
+)
+values (
+  '$ORG_A',
+  '$WORKBOOK_A',
+  '$COMPONENT_A',
+  '$SPACE_A'
+);
 
 insert into cobie.system (
   id,
   organization_id,
   workbook_id,
   name,
-  category,
-  component_names,
   description
 )
 values (
@@ -254,9 +284,20 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke System A',
-  'SmokeCategory',
-  'API Smoke Component A',
   'Tenant A system'
+);
+
+insert into cobie.system_component (
+  organization_id,
+  workbook_id,
+  system_id,
+  component_id
+)
+values (
+  '$ORG_A',
+  '$WORKBOOK_A',
+  '$SYSTEM_A',
+  '$COMPONENT_A'
 );
 
 insert into cobie.attribute (
@@ -264,9 +305,6 @@ insert into cobie.attribute (
   organization_id,
   workbook_id,
   name,
-  category,
-  sheet_name,
-  row_name,
   value
 )
 values (
@@ -274,9 +312,6 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Attribute A',
-  'SmokeCategory',
-  'Component',
-  'API Smoke Component A',
   'Smoke Value'
 );
 
@@ -285,10 +320,6 @@ insert into cobie.document (
   organization_id,
   workbook_id,
   name,
-  category,
-  sheet_name,
-  row_name,
-  stage,
   reference
 )
 values (
@@ -296,10 +327,6 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Document A',
-  'SmokeCategory',
-  'Component',
-  'API Smoke Component A',
-  'SmokeStage',
   'Smoke Reference'
 );
 
@@ -308,9 +335,7 @@ insert into cobie.job (
   organization_id,
   workbook_id,
   name,
-  status,
-  category,
-  type_name,
+  type_id,
   duration,
   frequency
 )
@@ -319,9 +344,7 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Job A',
-  'SmokeStatus',
-  'SmokeCategory',
-  'API Smoke Type A',
+  '$TYPE_A',
   '1',
   'Monthly'
 );
@@ -331,7 +354,6 @@ insert into cobie.resource (
   organization_id,
   workbook_id,
   name,
-  category,
   description
 )
 values (
@@ -339,7 +361,6 @@ values (
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Resource A',
-  'SmokeCategory',
   'Tenant A resource'
 );
 
@@ -348,22 +369,14 @@ insert into cobie.issue (
   organization_id,
   workbook_id,
   name,
-  type,
-  risk,
-  chance,
-  impact,
-  owner
+  description
 )
 values (
   '$ISSUE_A',
   '$ORG_A',
   '$WORKBOOK_A',
   'API Smoke Issue A',
-  'SmokeType',
-  'SmokeRisk',
-  'Low',
-  'Low',
-  'API Smoke Owner'
+  'Tenant A issue'
 );
 
 insert into cobie.picklist (
@@ -556,7 +569,7 @@ main() {
   assert_status 'user B lists tenant A components' 200
   assert_array_len 'user B sees zero tenant A components' 0
 
-  api_request GET 'facility?select=id,name,category&category=eq.SmokeCategory' "$token_a" cobie
+  api_request GET 'facility?select=id,name,project_name&project_name=ilike.*Smoke*' "$token_a" cobie
   assert_status 'user A filters facilities' 200
   assert_array_len 'user A sees one facility' 1
 
@@ -568,31 +581,31 @@ main() {
   assert_status 'user A filters contacts' 200
   assert_array_len 'user A sees one contact' 1
 
-  api_request GET 'zone?select=id,name,category&category=eq.SmokeCategory' "$token_a" cobie
+  api_request GET 'zone?select=id,name,description&description=ilike.*zone*' "$token_a" cobie
   assert_status 'user A filters zones' 200
   assert_array_len 'user A sees one zone' 1
 
-  api_request GET 'system?select=id,name,category&category=eq.SmokeCategory' "$token_a" cobie
+  api_request GET 'system?select=id,name,description&description=ilike.*system*' "$token_a" cobie
   assert_status 'user A filters systems' 200
   assert_array_len 'user A sees one system' 1
 
-  api_request GET 'attribute?select=id,name,sheet_name,row_name&sheet_name=eq.Component' "$token_a" cobie
+  api_request GET 'attribute?select=id,name,value&value=eq.Smoke%20Value' "$token_a" cobie
   assert_status 'user A filters attributes' 200
   assert_array_len 'user A sees one attribute' 1
 
-  api_request GET 'document?select=id,name,sheet_name,row_name&stage=eq.SmokeStage' "$token_a" cobie
+  api_request GET 'document?select=id,name,reference&reference=eq.Smoke%20Reference' "$token_a" cobie
   assert_status 'user A filters documents' 200
   assert_array_len 'user A sees one document' 1
 
-  api_request GET 'job?select=id,name,status,type_name&status=eq.SmokeStatus' "$token_a" cobie
+  api_request GET "job?select=id,name,type_id&type_id=eq.${TYPE_A}" "$token_a" cobie
   assert_status 'user A filters jobs' 200
   assert_array_len 'user A sees one job' 1
 
-  api_request GET 'resource?select=id,name,category&category=eq.SmokeCategory' "$token_a" cobie
+  api_request GET 'resource?select=id,name,description&description=ilike.*resource*' "$token_a" cobie
   assert_status 'user A filters resources' 200
   assert_array_len 'user A sees one resource' 1
 
-  api_request GET 'issue?select=id,name,type,risk&type=eq.SmokeType' "$token_a" cobie
+  api_request GET 'issue?select=id,name,description&description=ilike.*issue*' "$token_a" cobie
   assert_status 'user A filters issues' 200
   assert_array_len 'user A sees one issue' 1
 
@@ -605,7 +618,7 @@ main() {
     \"organization_id\": \"$ORG_A\",
     \"workbook_id\": \"$WORKBOOK_A\",
     \"name\": \"API Smoke Component Created\",
-    \"type_name\": \"API Smoke Type A\",
+    \"type_id\": \"$TYPE_A\",
     \"description\": \"Created via API smoke\"
   }"
   assert_status 'user A creates component' 201

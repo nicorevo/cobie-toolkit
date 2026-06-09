@@ -1,6 +1,7 @@
-import { Admin, Resource } from 'react-admin';
+import { Admin, Layout, Resource, type LayoutProps } from 'react-admin';
 import { authProvider } from './authProvider';
 import { dataProvider } from './dataProvider';
+import { AdminMenu } from './AdminMenu';
 import {
   FacilityCreate,
   FacilityEdit,
@@ -68,6 +69,14 @@ import {
   WorkbookList,
   WorkbookShow,
 } from './resources/workbooks';
+import {
+  createLookupResourceViews,
+  lookupResources,
+} from './resources/lookupResources';
+
+const AdminLayout = (props: LayoutProps) => (
+  <Layout {...props} menu={AdminMenu} />
+);
 
 export function AdminApp() {
   return (
@@ -75,6 +84,7 @@ export function AdminApp() {
       basename="/admin"
       dataProvider={dataProvider}
       authProvider={authProvider}
+      layout={AdminLayout}
       requireAuth
     >
       <Resource
@@ -176,6 +186,21 @@ export function AdminApp() {
         create={ContactCreate}
         edit={ContactEdit}
       />
+      {lookupResources.map((lookupResource) => {
+        const views = createLookupResourceViews(lookupResource);
+
+        return (
+          <Resource
+            key={lookupResource.name}
+            name={lookupResource.name}
+            list={views.list}
+            show={views.show}
+            create={views.create}
+            edit={views.edit}
+            options={{ label: lookupResource.label }}
+          />
+        );
+      })}
     </Admin>
   );
 }

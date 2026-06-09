@@ -278,7 +278,7 @@ components:
                 organization_id: 11111111-1111-1111-1111-111111111111
                 workbook_id: 22222222-2222-2222-2222-222222222222
                 name: AHU-01
-                type_name: Air Handling Unit Type A
+                type_id: 33333333-3333-3333-3333-333333333333
     GenericPatch:
       required: true
       content:

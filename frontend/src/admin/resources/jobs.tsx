@@ -7,13 +7,38 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+} from './referenceInputs';
 
 const jobFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="status" source="status" label="Status" />,
-  <TextInput key="type_name" source="type_name@ilike" label="Type" />,
-  <TextInput key="category" source="category" label="Category" />,
+  <ReferenceAutocompleteInput
+    key="status_id"
+    source="status_id"
+    reference="job_status"
+    optionText="status_name"
+    label="Status"
+  />,
+  <ReferenceAutocompleteInput
+    key="type_id"
+    source="type_id"
+    reference="type"
+    optionText="name"
+    label="Type"
+  />,
+  <ReferenceAutocompleteInput
+    key="category_job_id"
+    source="category_job_id"
+    reference="category_job"
+    optionText="category_name"
+    label="Category"
+  />,
 ];
 
 export function JobList() {
@@ -25,9 +50,24 @@ export function JobList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="status" />
-        <TextField source="category" />
-        <TextField source="type_name" />
+        <LookupReferenceField
+          source="status_id"
+          reference="job_status"
+          optionText="status_name"
+          label="Status"
+        />
+        <LookupReferenceField
+          source="category_job_id"
+          reference="category_job"
+          optionText="category_name"
+          label="Category"
+        />
+        <LookupReferenceField
+          source="type_id"
+          reference="type"
+          optionText="name"
+          label="Type"
+        />
         <TextField source="duration" />
         <TextField source="frequency" />
       </Datagrid>
@@ -40,20 +80,33 @@ export function JobShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="status" />
-        <TextField source="category" />
-        <TextField source="type_name" />
+        <LookupReferenceField
+          source="status_id"
+          reference="job_status"
+          optionText="status_name"
+          label="Status"
+        />
+        <LookupReferenceField
+          source="category_job_id"
+          reference="category_job"
+          optionText="category_name"
+          label="Category"
+        />
+        <LookupReferenceField
+          source="type_id"
+          reference="type"
+          optionText="name"
+          label="Type"
+        />
         <TextField source="description" />
         <TextField source="duration" />
         <TextField source="duration_unit" />
         <TextField source="frequency" />
         <TextField source="frequency_unit" />
         <TextField source="task_number" />
-        <TextField source="resource_names" />
-        <TextField source="priors" />
         <TextField source="start_value" />
         <TextField source="task_start_unit" />
         <TextField source="external_system" />

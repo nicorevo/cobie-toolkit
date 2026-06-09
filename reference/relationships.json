@@ -10,42 +10,62 @@
     "job.name",
     "document.name"
   ],
-  "references": [
+  "normalized_references": [
     {
-      "from": "space.floor_name",
-      "to": "floor.name",
+      "from": "space.floor_id",
+      "to": "floor.id",
       "scope": "workbook"
     },
     {
-      "from": "component.type_name",
-      "to": "type.name",
+      "from": "component.type_id",
+      "to": "type.id",
       "scope": "workbook"
     },
     {
-      "from": "component.space_name",
-      "to": "space.name",
+      "from": "component_space.component_id",
+      "to": "component.id",
       "scope": "workbook"
     },
     {
-      "from": "spare.type_name",
-      "to": "type.name",
+      "from": "component_space.space_id",
+      "to": "space.id",
       "scope": "workbook"
     },
     {
-      "from": "job.type_name",
-      "to": "type.name",
+      "from": "zone_space.zone_id",
+      "to": "zone.id",
       "scope": "workbook"
     },
     {
-      "from": "attribute.sheet_name,row_name",
-      "to": "dynamic sheet row",
+      "from": "zone_space.space_id",
+      "to": "space.id",
       "scope": "workbook"
     },
     {
-      "from": "document.sheet_name,row_name",
-      "to": "dynamic sheet row",
+      "from": "system_component.system_id",
+      "to": "system.id",
+      "scope": "workbook"
+    },
+    {
+      "from": "system_component.component_id",
+      "to": "component.id",
+      "scope": "workbook"
+    },
+    {
+      "from": "spare.type_id",
+      "to": "type.id",
+      "scope": "workbook"
+    },
+    {
+      "from": "job.type_id",
+      "to": "type.id",
+      "scope": "workbook"
+    },
+    {
+      "from": "row_reference.source_table,source_id,target_table,target_id",
+      "to": "dynamic COBie row reference",
       "scope": "workbook"
     }
   ],
-  "note": "Starter relationship catalog. Verify against actual template and Annex A before hardening constraints."
+  "note": "Normalized relationship catalog after COBie DB normalization. Source spreadsheet names remain available through raw_row/import diagnostics, not duplicate operational columns."
 }

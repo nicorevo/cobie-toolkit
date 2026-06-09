@@ -11,13 +11,27 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const attributeFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
-  <TextInput key="sheet_name" source="sheet_name" label="Sheet" />,
-  <TextInput key="row_name" source="row_name@ilike" label="Row" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="category" source="category" label="Category" />,
+  <ReferenceAutocompleteInput
+    key="category_attribute_id"
+    source="category_attribute_id"
+    reference="category_attribute"
+    optionText="category_name"
+    label="Category"
+  />,
 ];
 
 const requiredField = [required()];
@@ -25,12 +39,15 @@ const requiredField = [required()];
 function AttributeForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
-      <TextInput source="category" fullWidth />
-      <TextInput source="sheet_name" fullWidth />
-      <TextInput source="row_name" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="category_attribute_id"
+        reference="category_attribute"
+        optionText="category_name"
+        label="Category"
+      />
       <TextInput source="value" fullWidth />
       <TextInput source="unit" fullWidth />
       <TextInput source="description" fullWidth multiline />
@@ -48,9 +65,12 @@ export function AttributeList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="sheet_name" />
-        <TextField source="row_name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_attribute_id"
+          reference="category_attribute"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="value" />
         <TextField source="unit" />
       </Datagrid>
@@ -63,12 +83,15 @@ export function AttributeShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="category" />
-        <TextField source="sheet_name" />
-        <TextField source="row_name" />
+        <LookupReferenceField
+          source="category_attribute_id"
+          reference="category_attribute"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="value" />
         <TextField source="unit" />
         <TextField source="description" />

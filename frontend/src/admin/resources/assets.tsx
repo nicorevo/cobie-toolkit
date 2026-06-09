@@ -11,12 +11,34 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const typeFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="category" source="category" label="Category" />,
-  <TextInput key="asset_type" source="asset_type" label="Asset Type" />,
+  <ReferenceAutocompleteInput
+    key="category_type_id"
+    source="category_type_id"
+    reference="category_type"
+    optionText="category_name"
+    label="Category"
+  />,
+  <ReferenceAutocompleteInput
+    key="asset_type_id"
+    source="asset_type_id"
+    reference="asset_type"
+    optionText="asset_type_name"
+    label="Asset Type"
+  />,
   <TextInput
     key="manufacturer"
     source="manufacturer@ilike"
@@ -29,12 +51,22 @@ const requiredField = [required()];
 function TypeForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
-      <TextInput source="category" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="category_type_id"
+        reference="category_type"
+        optionText="category_name"
+        label="Category"
+      />
       <TextInput source="description" fullWidth multiline />
-      <TextInput source="asset_type" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="asset_type_id"
+        reference="asset_type"
+        optionText="asset_type_name"
+        label="Asset Type"
+      />
       <TextInput source="manufacturer" fullWidth />
       <TextInput source="model_number" fullWidth />
       <TextInput source="model_reference" fullWidth />
@@ -73,8 +105,18 @@ export function TypeList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="category" />
-        <TextField source="asset_type" />
+        <LookupReferenceField
+          source="category_type_id"
+          reference="category_type"
+          optionText="category_name"
+          label="Category"
+        />
+        <LookupReferenceField
+          source="asset_type_id"
+          reference="asset_type"
+          optionText="asset_type_name"
+          label="Asset Type"
+        />
         <TextField source="manufacturer" />
         <TextField source="model_number" />
       </Datagrid>
@@ -87,12 +129,22 @@ export function TypeShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_type_id"
+          reference="category_type"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="description" />
-        <TextField source="asset_type" />
+        <LookupReferenceField
+          source="asset_type_id"
+          reference="asset_type"
+          optionText="asset_type_name"
+          label="Asset Type"
+        />
         <TextField source="manufacturer" />
         <TextField source="model_number" />
         <TextField source="model_reference" />

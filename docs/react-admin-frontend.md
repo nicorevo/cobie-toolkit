@@ -107,8 +107,20 @@ Implementate con verifica automatica `lint`, `typecheck` e `build`:
 - `issue`: List, Show read-only.
 - `picklist`: List, Show read-only.
 - `cobie_validation_issues`: List, Show read-only diagnostic view.
+- "Sezione amministrativa": lookup COBie List, Show, Create, Edit e Delete per:
+  `category_contact`, `category_facility`, `category_floor`,
+  `category_space`, `category_zone`, `category_type`, `asset_type`,
+  `category_system`, `assembly_type`, `connection_type`, `category_spare`,
+  `category_resource`, `category_job`, `job_status`, `impact_type`,
+  `impact_stage`, `category_document`, `document_stage`,
+  `category_attribute`, `category_coordinate`, `issue_type`, `issue_risk`,
+  `issue_chance`, `issue_impact`.
 
 Le form manuali richiedono ancora `organization_id` e `workbook_id` espliciti. Questo evita di fingere autorizzazione lato frontend: RLS valida membership e coerenza `organization_id`/`workbook_id`.
+
+Le lookup amministrative espongono Delete in UI. Il permesso reale resta nel
+database: solo gli admin organizzazione passano la policy RLS di delete e i
+vincoli FK impediscono di cancellare lookup gia' referenziate da righe COBie.
 
 ## Smoke manuali pendenti
 
@@ -121,4 +133,7 @@ Da eseguire quando è disponibile una sessione Supabase/Auth reale o un utente l
 - CRUD smoke per Contact, Facility, Floor, Space, Zone, Type, Component, System, Attribute e Document;
 - list/show smoke read-only per Job, Resource, Issue e Picklist;
 - lista read-only Validation Issues e filtro per workbook/severity.
+- sezione amministrativa lookup visibile nel menu;
+- create/edit/delete di una lookup non referenziata, ad esempio una categoria Facility;
+- errore DB mostrato quando si tenta di eliminare una lookup referenziata;
 - errore autorizzazione mostrato correttamente quando RLS nega una write.

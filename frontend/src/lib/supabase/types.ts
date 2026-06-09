@@ -25,6 +25,7 @@ export type Database = {
           space_name: string | null
           tag_number: string | null
           type_category: string | null
+          type_id: string | null
           type_name: string | null
           updated_at: string | null
           workbook_id: string | null
@@ -33,6 +34,8 @@ export type Database = {
       }
       cobie_document_index: {
         Row: {
+          approval_by: string | null
+          approval_contact_id: string | null
           category: string | null
           description: string | null
           directory: string | null
@@ -41,35 +44,9 @@ export type Database = {
           name: string | null
           organization_id: string | null
           reference: string | null
-          row_name: string | null
-          sheet_name: string | null
+          stage: string | null
+          target_count: number | null
           workbook_id: string | null
-        }
-        Insert: {
-          category?: string | null
-          description?: string | null
-          directory?: string | null
-          file?: string | null
-          id?: string | null
-          name?: string | null
-          organization_id?: string | null
-          reference?: string | null
-          row_name?: string | null
-          sheet_name?: string | null
-          workbook_id?: string | null
-        }
-        Update: {
-          category?: string | null
-          description?: string | null
-          directory?: string | null
-          file?: string | null
-          id?: string | null
-          name?: string | null
-          organization_id?: string | null
-          reference?: string | null
-          row_name?: string | null
-          sheet_name?: string | null
-          workbook_id?: string | null
         }
         Relationships: []
       }
@@ -78,6 +55,7 @@ export type Database = {
           category: string | null
           description: string | null
           floor_category: string | null
+          floor_id: string | null
           floor_name: string | null
           gross_area: string | null
           id: string | null
@@ -215,8 +193,7 @@ export type Database = {
     Tables: {
       assembly: {
         Row: {
-          assembly_type: string | null
-          child_names: string | null
+          assembly_type_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -227,7 +204,7 @@ export type Database = {
           inserted_at: string
           name: string | null
           organization_id: string
-          parent_name: string | null
+          parent_id: string | null
           raw_row: Json
           sheet_name: string | null
           source_row_number: number | null
@@ -236,8 +213,7 @@ export type Database = {
           workbook_id: string
         }
         Insert: {
-          assembly_type?: string | null
-          child_names?: string | null
+          assembly_type_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -248,7 +224,7 @@ export type Database = {
           inserted_at?: string
           name?: string | null
           organization_id: string
-          parent_name?: string | null
+          parent_id?: string | null
           raw_row?: Json
           sheet_name?: string | null
           source_row_number?: number | null
@@ -257,8 +233,7 @@ export type Database = {
           workbook_id: string
         }
         Update: {
-          assembly_type?: string | null
-          child_names?: string | null
+          assembly_type_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -269,7 +244,7 @@ export type Database = {
           inserted_at?: string
           name?: string | null
           organization_id?: string
-          parent_name?: string | null
+          parent_id?: string | null
           raw_row?: Json
           sheet_name?: string | null
           source_row_number?: number | null
@@ -279,7 +254,146 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "assembly_assembly_type_fk"
+            columns: ["workbook_id", "assembly_type_id"]
+            isOneToOne: false
+            referencedRelation: "assembly_type"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "assembly_parent_fk"
+            columns: ["workbook_id", "parent_id"]
+            isOneToOne: false
+            referencedRelation: "assembly"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "assembly_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assembly_child: {
+        Row: {
+          child_assembly_id: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          parent_assembly_id: string
+          source_position: number
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          child_assembly_id: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          parent_assembly_id: string
+          source_position?: number
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          child_assembly_id?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          parent_assembly_id?: string
+          source_position?: number
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assembly_child_child_fk"
+            columns: ["workbook_id", "child_assembly_id"]
+            isOneToOne: false
+            referencedRelation: "assembly"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "assembly_child_parent_fk"
+            columns: ["workbook_id", "parent_assembly_id"]
+            isOneToOne: false
+            referencedRelation: "assembly"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "assembly_child_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assembly_type: {
+        Row: {
+          assembly_type_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          assembly_type_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          assembly_type_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assembly_type_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      asset_type: {
+        Row: {
+          asset_type_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          asset_type_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          asset_type_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_type_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
@@ -290,7 +404,7 @@ export type Database = {
       attribute: {
         Row: {
           allowed_values: string | null
-          category: string | null
+          category_attribute_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -302,8 +416,6 @@ export type Database = {
           name: string
           organization_id: string
           raw_row: Json
-          row_name: string | null
-          sheet_name: string | null
           source_row_number: number | null
           source_sheet: string
           unit: string | null
@@ -313,7 +425,7 @@ export type Database = {
         }
         Insert: {
           allowed_values?: string | null
-          category?: string | null
+          category_attribute_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -325,8 +437,6 @@ export type Database = {
           name: string
           organization_id: string
           raw_row?: Json
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           unit?: string | null
@@ -336,7 +446,7 @@ export type Database = {
         }
         Update: {
           allowed_values?: string | null
-          category?: string | null
+          category_attribute_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -348,8 +458,6 @@ export type Database = {
           name?: string
           organization_id?: string
           raw_row?: Json
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           unit?: string | null
@@ -359,7 +467,469 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "attribute_category_attribute_fk"
+            columns: ["workbook_id", "category_attribute_id"]
+            isOneToOne: false
+            referencedRelation: "category_attribute"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "attribute_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_attribute: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_attribute_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_contact: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_contact_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_coordinate: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_coordinate_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_document: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_document_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_facility: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_facility_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_floor: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_floor_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_job: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_job_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_resource: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_resource_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_space: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_space_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_spare: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_spare_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_system: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_system_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_type: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_type_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      category_zone: {
+        Row: {
+          category_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          category_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          category_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_zone_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
@@ -386,9 +956,8 @@ export type Database = {
           serial_number: string | null
           source_row_number: number | null
           source_sheet: string
-          space_name: string | null
           tag_number: string | null
-          type_name: string | null
+          type_id: string | null
           updated_at: string
           warranty_start_date: string | null
           workbook_id: string
@@ -411,9 +980,8 @@ export type Database = {
           serial_number?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          space_name?: string | null
           tag_number?: string | null
-          type_name?: string | null
+          type_id?: string | null
           updated_at?: string
           warranty_start_date?: string | null
           workbook_id: string
@@ -436,14 +1004,20 @@ export type Database = {
           serial_number?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          space_name?: string | null
           tag_number?: string | null
-          type_name?: string | null
+          type_id?: string | null
           updated_at?: string
           warranty_start_date?: string | null
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "component_type_fk"
+            columns: ["workbook_id", "type_id"]
+            isOneToOne: false
+            referencedRelation: "type"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "component_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -453,9 +1027,64 @@ export type Database = {
           },
         ]
       }
+      component_space: {
+        Row: {
+          component_id: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          source_position: number
+          space_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          component_id: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          source_position?: number
+          space_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          component_id?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          source_position?: number
+          space_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "component_space_component_fk"
+            columns: ["workbook_id", "component_id"]
+            isOneToOne: false
+            referencedRelation: "component"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "component_space_space_fk"
+            columns: ["workbook_id", "space_id"]
+            isOneToOne: false
+            referencedRelation: "space"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "component_space_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       connection: {
         Row: {
-          connection_type: string | null
+          connection_type_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -470,16 +1099,13 @@ export type Database = {
           port_name_2: string | null
           raw_row: Json
           realizing_element: string | null
-          row_name_1: string | null
-          row_name_2: string | null
-          sheet_name: string | null
           source_row_number: number | null
           source_sheet: string
           updated_at: string
           workbook_id: string
         }
         Insert: {
-          connection_type?: string | null
+          connection_type_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -494,16 +1120,13 @@ export type Database = {
           port_name_2?: string | null
           raw_row?: Json
           realizing_element?: string | null
-          row_name_1?: string | null
-          row_name_2?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           updated_at?: string
           workbook_id: string
         }
         Update: {
-          connection_type?: string | null
+          connection_type_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -518,15 +1141,19 @@ export type Database = {
           port_name_2?: string | null
           raw_row?: Json
           realizing_element?: string | null
-          row_name_1?: string | null
-          row_name_2?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           updated_at?: string
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "connection_connection_type_fk"
+            columns: ["workbook_id", "connection_type_id"]
+            isOneToOne: false
+            referencedRelation: "connection_type"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "connection_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -536,9 +1163,44 @@ export type Database = {
           },
         ]
       }
+      connection_type: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          type_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          type_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          type_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "connection_type_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact: {
         Row: {
-          category: string | null
+          category_contact_id: string | null
           company: string | null
           country: string | null
           created_by_email: string | null
@@ -567,7 +1229,7 @@ export type Database = {
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_contact_id?: string | null
           company?: string | null
           country?: string | null
           created_by_email?: string | null
@@ -596,7 +1258,7 @@ export type Database = {
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_contact_id?: string | null
           company?: string | null
           country?: string | null
           created_by_email?: string | null
@@ -626,6 +1288,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "contact_category_contact_fk"
+            columns: ["workbook_id", "category_contact_id"]
+            isOneToOne: false
+            referencedRelation: "category_contact"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "contact_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
@@ -636,7 +1305,7 @@ export type Database = {
       }
       coordinate: {
         Row: {
-          category: string | null
+          category_coordinate_id: string | null
           clockwise_rotation: string | null
           coordinate_x_axis: string | null
           coordinate_y_axis: string | null
@@ -652,8 +1321,6 @@ export type Database = {
           name: string | null
           organization_id: string
           raw_row: Json
-          row_name: string | null
-          sheet_name: string | null
           source_row_number: number | null
           source_sheet: string
           updated_at: string
@@ -661,7 +1328,7 @@ export type Database = {
           yaw_rotation: string | null
         }
         Insert: {
-          category?: string | null
+          category_coordinate_id?: string | null
           clockwise_rotation?: string | null
           coordinate_x_axis?: string | null
           coordinate_y_axis?: string | null
@@ -677,8 +1344,6 @@ export type Database = {
           name?: string | null
           organization_id: string
           raw_row?: Json
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           updated_at?: string
@@ -686,7 +1351,7 @@ export type Database = {
           yaw_rotation?: string | null
         }
         Update: {
-          category?: string | null
+          category_coordinate_id?: string | null
           clockwise_rotation?: string | null
           coordinate_x_axis?: string | null
           coordinate_y_axis?: string | null
@@ -702,8 +1367,6 @@ export type Database = {
           name?: string | null
           organization_id?: string
           raw_row?: Json
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           updated_at?: string
@@ -711,6 +1374,13 @@ export type Database = {
           yaw_rotation?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "coordinate_category_coordinate_fk"
+            columns: ["workbook_id", "category_coordinate_id"]
+            isOneToOne: false
+            referencedRelation: "category_coordinate"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "coordinate_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -722,8 +1392,8 @@ export type Database = {
       }
       document: {
         Row: {
-          approval_by: string | null
-          category: string | null
+          approval_contact_id: string | null
+          category_document_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -738,17 +1408,15 @@ export type Database = {
           organization_id: string
           raw_row: Json
           reference: string | null
-          row_name: string | null
-          sheet_name: string | null
           source_row_number: number | null
           source_sheet: string
-          stage: string | null
+          stage_id: string | null
           updated_at: string
           workbook_id: string
         }
         Insert: {
-          approval_by?: string | null
-          category?: string | null
+          approval_contact_id?: string | null
+          category_document_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -763,17 +1431,15 @@ export type Database = {
           organization_id: string
           raw_row?: Json
           reference?: string | null
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          stage?: string | null
+          stage_id?: string | null
           updated_at?: string
           workbook_id: string
         }
         Update: {
-          approval_by?: string | null
-          category?: string | null
+          approval_contact_id?: string | null
+          category_document_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -788,17 +1454,71 @@ export type Database = {
           organization_id?: string
           raw_row?: Json
           reference?: string | null
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          stage?: string | null
+          stage_id?: string | null
           updated_at?: string
           workbook_id?: string
         }
         Relationships: [
           {
+            foreignKeyName: "document_approval_contact_fk"
+            columns: ["workbook_id", "approval_contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "document_category_document_fk"
+            columns: ["workbook_id", "category_document_id"]
+            isOneToOne: false
+            referencedRelation: "category_document"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "document_stage_fk"
+            columns: ["workbook_id", "stage_id"]
+            isOneToOne: false
+            referencedRelation: "document_stage"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "document_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_stage: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          stage_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          stage_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          stage_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_stage_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
@@ -810,7 +1530,7 @@ export type Database = {
         Row: {
           area_measurement: string | null
           area_units: string | null
-          category: string | null
+          category_facility_id: string | null
           created_by_email: string | null
           created_on: string | null
           currency_unit: string | null
@@ -842,7 +1562,7 @@ export type Database = {
         Insert: {
           area_measurement?: string | null
           area_units?: string | null
-          category?: string | null
+          category_facility_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           currency_unit?: string | null
@@ -874,7 +1594,7 @@ export type Database = {
         Update: {
           area_measurement?: string | null
           area_units?: string | null
-          category?: string | null
+          category_facility_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           currency_unit?: string | null
@@ -905,6 +1625,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "facility_category_facility_fk"
+            columns: ["workbook_id", "category_facility_id"]
+            isOneToOne: false
+            referencedRelation: "category_facility"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "facility_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
@@ -915,7 +1642,7 @@ export type Database = {
       }
       floor: {
         Row: {
-          category: string | null
+          category_floor_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -935,7 +1662,7 @@ export type Database = {
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_floor_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -955,7 +1682,7 @@ export type Database = {
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_floor_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -975,6 +1702,13 @@ export type Database = {
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "floor_category_floor_fk"
+            columns: ["workbook_id", "category_floor_id"]
+            isOneToOne: false
+            referencedRelation: "category_floor"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "floor_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -994,8 +1728,8 @@ export type Database = {
           external_object: string | null
           external_system: string | null
           id: string
-          impact_stage: string | null
-          impact_type: string | null
+          impact_stage_id: string | null
+          impact_type_id: string | null
           impact_unit: string | null
           inserted_at: string
           lead_in_time: string | null
@@ -1003,8 +1737,6 @@ export type Database = {
           name: string | null
           organization_id: string
           raw_row: Json
-          row_name: string | null
-          sheet_name: string | null
           source_row_number: number | null
           source_sheet: string
           updated_at: string
@@ -1020,8 +1752,8 @@ export type Database = {
           external_object?: string | null
           external_system?: string | null
           id?: string
-          impact_stage?: string | null
-          impact_type?: string | null
+          impact_stage_id?: string | null
+          impact_type_id?: string | null
           impact_unit?: string | null
           inserted_at?: string
           lead_in_time?: string | null
@@ -1029,8 +1761,6 @@ export type Database = {
           name?: string | null
           organization_id: string
           raw_row?: Json
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           updated_at?: string
@@ -1046,8 +1776,8 @@ export type Database = {
           external_object?: string | null
           external_system?: string | null
           id?: string
-          impact_stage?: string | null
-          impact_type?: string | null
+          impact_stage_id?: string | null
+          impact_type_id?: string | null
           impact_unit?: string | null
           inserted_at?: string
           lead_in_time?: string | null
@@ -1055,8 +1785,6 @@ export type Database = {
           name?: string | null
           organization_id?: string
           raw_row?: Json
-          row_name?: string | null
-          sheet_name?: string | null
           source_row_number?: number | null
           source_sheet?: string
           updated_at?: string
@@ -1064,6 +1792,20 @@ export type Database = {
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "impact_impact_stage_fk"
+            columns: ["workbook_id", "impact_stage_id"]
+            isOneToOne: false
+            referencedRelation: "impact_stage"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "impact_impact_type_fk"
+            columns: ["workbook_id", "impact_type_id"]
+            isOneToOne: false
+            referencedRelation: "impact_type"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "impact_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -1073,9 +1815,79 @@ export type Database = {
           },
         ]
       }
+      impact_stage: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          stage_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          stage_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          stage_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "impact_stage_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      impact_type: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          type_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          type_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          type_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "impact_type_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       issue: {
         Row: {
-          chance: string | null
+          chance_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -1083,24 +1895,22 @@ export type Database = {
           ext_object: string | null
           ext_system: string | null
           id: string
-          impact: string | null
           inserted_at: string
+          issue_impact_id: string | null
+          issue_type_id: string | null
           mitigation: string | null
           name: string
           organization_id: string
-          owner: string | null
+          owner_contact_id: string | null
           raw_row: Json
-          risk: string | null
-          row_name: string | null
-          sheet_name: string | null
+          risk_id: string | null
           source_row_number: number | null
           source_sheet: string
-          type: string | null
           updated_at: string
           workbook_id: string
         }
         Insert: {
-          chance?: string | null
+          chance_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1108,24 +1918,22 @@ export type Database = {
           ext_object?: string | null
           ext_system?: string | null
           id?: string
-          impact?: string | null
           inserted_at?: string
+          issue_impact_id?: string | null
+          issue_type_id?: string | null
           mitigation?: string | null
           name: string
           organization_id: string
-          owner?: string | null
+          owner_contact_id?: string | null
           raw_row?: Json
-          risk?: string | null
-          row_name?: string | null
-          sheet_name?: string | null
+          risk_id?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          type?: string | null
           updated_at?: string
           workbook_id: string
         }
         Update: {
-          chance?: string | null
+          chance_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1133,23 +1941,56 @@ export type Database = {
           ext_object?: string | null
           ext_system?: string | null
           id?: string
-          impact?: string | null
           inserted_at?: string
+          issue_impact_id?: string | null
+          issue_type_id?: string | null
           mitigation?: string | null
           name?: string
           organization_id?: string
-          owner?: string | null
+          owner_contact_id?: string | null
           raw_row?: Json
-          risk?: string | null
-          row_name?: string | null
-          sheet_name?: string | null
+          risk_id?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          type?: string | null
           updated_at?: string
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "issue_chance_fk"
+            columns: ["workbook_id", "chance_id"]
+            isOneToOne: false
+            referencedRelation: "issue_chance"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "issue_issue_impact_fk"
+            columns: ["workbook_id", "issue_impact_id"]
+            isOneToOne: false
+            referencedRelation: "issue_impact"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "issue_issue_type_fk"
+            columns: ["workbook_id", "issue_type_id"]
+            isOneToOne: false
+            referencedRelation: "issue_type"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "issue_owner_contact_fk"
+            columns: ["workbook_id", "owner_contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "issue_risk_fk"
+            columns: ["workbook_id", "risk_id"]
+            isOneToOne: false
+            referencedRelation: "issue_risk"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "issue_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -1159,9 +2000,200 @@ export type Database = {
           },
         ]
       }
+      issue_chance: {
+        Row: {
+          chance_name: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          chance_name: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          chance_name?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_chance_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issue_impact: {
+        Row: {
+          id: string
+          impact_name: string
+          inserted_at: string
+          organization_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          impact_name: string
+          inserted_at?: string
+          organization_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          impact_name?: string
+          inserted_at?: string
+          organization_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_impact_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issue_risk: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          risk_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          risk_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          risk_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_risk_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issue_target: {
+        Row: {
+          id: string
+          inserted_at: string
+          issue_id: string
+          organization_id: string
+          target_id: string
+          target_position: number
+          target_table: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          issue_id: string
+          organization_id: string
+          target_id: string
+          target_position?: number
+          target_table: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          issue_id?: string
+          organization_id?: string
+          target_id?: string
+          target_position?: number
+          target_table?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_target_issue_fk"
+            columns: ["workbook_id", "issue_id"]
+            isOneToOne: false
+            referencedRelation: "issue"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "issue_target_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      issue_type: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          type_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          type_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          type_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issue_type_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job: {
         Row: {
-          category: string | null
+          category_job_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -1176,21 +2208,19 @@ export type Database = {
           inserted_at: string
           name: string
           organization_id: string
-          priors: string | null
           raw_row: Json
-          resource_names: string | null
           source_row_number: number | null
           source_sheet: string
           start_value: string | null
-          status: string | null
+          status_id: string | null
           task_number: string | null
           task_start_unit: string | null
-          type_name: string | null
+          type_id: string | null
           updated_at: string
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_job_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1205,21 +2235,19 @@ export type Database = {
           inserted_at?: string
           name: string
           organization_id: string
-          priors?: string | null
           raw_row?: Json
-          resource_names?: string | null
           source_row_number?: number | null
           source_sheet?: string
           start_value?: string | null
-          status?: string | null
+          status_id?: string | null
           task_number?: string | null
           task_start_unit?: string | null
-          type_name?: string | null
+          type_id?: string | null
           updated_at?: string
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_job_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1234,22 +2262,186 @@ export type Database = {
           inserted_at?: string
           name?: string
           organization_id?: string
-          priors?: string | null
           raw_row?: Json
-          resource_names?: string | null
           source_row_number?: number | null
           source_sheet?: string
           start_value?: string | null
-          status?: string | null
+          status_id?: string | null
           task_number?: string | null
           task_start_unit?: string | null
-          type_name?: string | null
+          type_id?: string | null
           updated_at?: string
           workbook_id?: string
         }
         Relationships: [
           {
+            foreignKeyName: "job_category_job_fk"
+            columns: ["workbook_id", "category_job_id"]
+            isOneToOne: false
+            referencedRelation: "category_job"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "job_status_fk"
+            columns: ["workbook_id", "status_id"]
+            isOneToOne: false
+            referencedRelation: "job_status"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "job_type_fk"
+            columns: ["workbook_id", "type_id"]
+            isOneToOne: false
+            referencedRelation: "type"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "job_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_prior: {
+        Row: {
+          id: string
+          inserted_at: string
+          job_id: string
+          organization_id: string
+          prior_job_id: string
+          source_position: number
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          job_id: string
+          organization_id: string
+          prior_job_id: string
+          source_position?: number
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          job_id?: string
+          organization_id?: string
+          prior_job_id?: string
+          source_position?: number
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_prior_job_fk"
+            columns: ["workbook_id", "job_id"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "job_prior_prior_fk"
+            columns: ["workbook_id", "prior_job_id"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "job_prior_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_resource: {
+        Row: {
+          id: string
+          inserted_at: string
+          job_id: string
+          organization_id: string
+          resource_id: string
+          source_position: number
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          job_id: string
+          organization_id: string
+          resource_id: string
+          source_position?: number
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          job_id?: string
+          organization_id?: string
+          resource_id?: string
+          source_position?: number
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_resource_job_fk"
+            columns: ["workbook_id", "job_id"]
+            isOneToOne: false
+            referencedRelation: "job"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "job_resource_resource_fk"
+            columns: ["workbook_id", "resource_id"]
+            isOneToOne: false
+            referencedRelation: "resource"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "job_resource_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_status: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          status_name: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          status_name: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          status_name?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_status_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
@@ -1309,7 +2501,7 @@ export type Database = {
       }
       resource: {
         Row: {
-          category: string | null
+          category_resource_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -1327,7 +2519,7 @@ export type Database = {
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_resource_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1345,7 +2537,7 @@ export type Database = {
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_resource_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1364,7 +2556,61 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "resource_category_resource_fk"
+            columns: ["workbook_id", "category_resource_id"]
+            isOneToOne: false
+            referencedRelation: "category_resource"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "resource_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      row_reference: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          source_id: string
+          source_table: string
+          target_id: string
+          target_position: number
+          target_table: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          source_id: string
+          source_table: string
+          target_id: string
+          target_position?: number
+          target_table: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          source_id?: string
+          source_table?: string
+          target_id?: string
+          target_position?: number
+          target_table?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "row_reference_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
@@ -1374,14 +2620,14 @@ export type Database = {
       }
       space: {
         Row: {
-          category: string | null
+          category_space_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
           external_identifier: string | null
           external_object: string | null
           external_system: string | null
-          floor_name: string | null
+          floor_id: string | null
           gross_area: string | null
           id: string
           inserted_at: string
@@ -1397,14 +2643,14 @@ export type Database = {
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_space_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
           external_identifier?: string | null
           external_object?: string | null
           external_system?: string | null
-          floor_name?: string | null
+          floor_id?: string | null
           gross_area?: string | null
           id?: string
           inserted_at?: string
@@ -1420,14 +2666,14 @@ export type Database = {
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_space_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
           external_identifier?: string | null
           external_object?: string | null
           external_system?: string | null
-          floor_name?: string | null
+          floor_id?: string | null
           gross_area?: string | null
           id?: string
           inserted_at?: string
@@ -1444,6 +2690,20 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "space_category_space_fk"
+            columns: ["workbook_id", "category_space_id"]
+            isOneToOne: false
+            referencedRelation: "category_space"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "space_floor_fk"
+            columns: ["workbook_id", "floor_id"]
+            isOneToOne: false
+            referencedRelation: "floor"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "space_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
@@ -1454,7 +2714,7 @@ export type Database = {
       }
       spare: {
         Row: {
-          category: string | null
+          category_spare_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -1470,13 +2730,12 @@ export type Database = {
           set_number: string | null
           source_row_number: number | null
           source_sheet: string
-          suppliers: string | null
-          type_name: string | null
+          type_id: string | null
           updated_at: string
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_spare_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1492,13 +2751,12 @@ export type Database = {
           set_number?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          suppliers?: string | null
-          type_name?: string | null
+          type_id?: string | null
           updated_at?: string
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_spare_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1514,12 +2772,25 @@ export type Database = {
           set_number?: string | null
           source_row_number?: number | null
           source_sheet?: string
-          suppliers?: string | null
-          type_name?: string | null
+          type_id?: string | null
           updated_at?: string
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "spare_category_spare_fk"
+            columns: ["workbook_id", "category_spare_id"]
+            isOneToOne: false
+            referencedRelation: "category_spare"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "spare_type_fk"
+            columns: ["workbook_id", "type_id"]
+            isOneToOne: false
+            referencedRelation: "type"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "spare_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -1529,10 +2800,64 @@ export type Database = {
           },
         ]
       }
+      spare_supplier: {
+        Row: {
+          contact_id: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          source_position: number
+          spare_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          contact_id: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          source_position?: number
+          spare_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          contact_id?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          source_position?: number
+          spare_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spare_supplier_contact_fk"
+            columns: ["workbook_id", "contact_id"]
+            isOneToOne: false
+            referencedRelation: "contact"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "spare_supplier_spare_fk"
+            columns: ["workbook_id", "spare_id"]
+            isOneToOne: false
+            referencedRelation: "spare"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "spare_supplier_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system: {
         Row: {
-          category: string | null
-          component_names: string | null
+          category_system_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -1550,8 +2875,7 @@ export type Database = {
           workbook_id: string
         }
         Insert: {
-          category?: string | null
-          component_names?: string | null
+          category_system_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1569,8 +2893,7 @@ export type Database = {
           workbook_id: string
         }
         Update: {
-          category?: string | null
-          component_names?: string | null
+          category_system_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1589,7 +2912,69 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "system_category_system_fk"
+            columns: ["workbook_id", "category_system_id"]
+            isOneToOne: false
+            referencedRelation: "category_system"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
             foreignKeyName: "system_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_component: {
+        Row: {
+          component_id: string
+          id: string
+          inserted_at: string
+          organization_id: string
+          source_position: number
+          system_id: string
+          updated_at: string
+          workbook_id: string
+        }
+        Insert: {
+          component_id: string
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          source_position?: number
+          system_id: string
+          updated_at?: string
+          workbook_id: string
+        }
+        Update: {
+          component_id?: string
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          source_position?: number
+          system_id?: string
+          updated_at?: string
+          workbook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_component_component_fk"
+            columns: ["workbook_id", "component_id"]
+            isOneToOne: false
+            referencedRelation: "component"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "system_component_system_fk"
+            columns: ["workbook_id", "system_id"]
+            isOneToOne: false
+            referencedRelation: "system"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "system_component_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
@@ -1600,8 +2985,8 @@ export type Database = {
       type: {
         Row: {
           accessibility_performance: string | null
-          asset_type: string | null
-          category: string | null
+          asset_type_id: string | null
+          category_type_id: string | null
           code_performance: string | null
           color: string | null
           constituents: string | null
@@ -1642,8 +3027,8 @@ export type Database = {
         }
         Insert: {
           accessibility_performance?: string | null
-          asset_type?: string | null
-          category?: string | null
+          asset_type_id?: string | null
+          category_type_id?: string | null
           code_performance?: string | null
           color?: string | null
           constituents?: string | null
@@ -1684,8 +3069,8 @@ export type Database = {
         }
         Update: {
           accessibility_performance?: string | null
-          asset_type?: string | null
-          category?: string | null
+          asset_type_id?: string | null
+          category_type_id?: string | null
           code_performance?: string | null
           color?: string | null
           constituents?: string | null
@@ -1725,6 +3110,20 @@ export type Database = {
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "type_asset_type_fk"
+            columns: ["workbook_id", "asset_type_id"]
+            isOneToOne: false
+            referencedRelation: "asset_type"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "type_category_type_fk"
+            columns: ["workbook_id", "category_type_id"]
+            isOneToOne: false
+            referencedRelation: "category_type"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "type_workbook_id_fkey"
             columns: ["workbook_id"]
@@ -1781,7 +3180,7 @@ export type Database = {
       }
       zone: {
         Row: {
-          category: string | null
+          category_zone_id: string | null
           created_by_email: string | null
           created_on: string | null
           description: string | null
@@ -1795,12 +3194,11 @@ export type Database = {
           raw_row: Json
           source_row_number: number | null
           source_sheet: string
-          space_names: string | null
           updated_at: string
           workbook_id: string
         }
         Insert: {
-          category?: string | null
+          category_zone_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1814,12 +3212,11 @@ export type Database = {
           raw_row?: Json
           source_row_number?: number | null
           source_sheet?: string
-          space_names?: string | null
           updated_at?: string
           workbook_id: string
         }
         Update: {
-          category?: string | null
+          category_zone_id?: string | null
           created_by_email?: string | null
           created_on?: string | null
           description?: string | null
@@ -1833,17 +3230,78 @@ export type Database = {
           raw_row?: Json
           source_row_number?: number | null
           source_sheet?: string
-          space_names?: string | null
           updated_at?: string
           workbook_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "zone_category_zone_fk"
+            columns: ["workbook_id", "category_zone_id"]
+            isOneToOne: false
+            referencedRelation: "category_zone"
+            referencedColumns: ["workbook_id", "id"]
+          },
           {
             foreignKeyName: "zone_workbook_id_fkey"
             columns: ["workbook_id"]
             isOneToOne: false
             referencedRelation: "workbook"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      zone_space: {
+        Row: {
+          id: string
+          inserted_at: string
+          organization_id: string
+          source_position: number
+          space_id: string
+          updated_at: string
+          workbook_id: string
+          zone_id: string
+        }
+        Insert: {
+          id?: string
+          inserted_at?: string
+          organization_id: string
+          source_position?: number
+          space_id: string
+          updated_at?: string
+          workbook_id: string
+          zone_id: string
+        }
+        Update: {
+          id?: string
+          inserted_at?: string
+          organization_id?: string
+          source_position?: number
+          space_id?: string
+          updated_at?: string
+          workbook_id?: string
+          zone_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zone_space_space_fk"
+            columns: ["workbook_id", "space_id"]
+            isOneToOne: false
+            referencedRelation: "space"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "zone_space_workbook_id_fkey"
+            columns: ["workbook_id"]
+            isOneToOne: false
+            referencedRelation: "workbook"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "zone_space_zone_fk"
+            columns: ["workbook_id", "zone_id"]
+            isOneToOne: false
+            referencedRelation: "zone"
+            referencedColumns: ["workbook_id", "id"]
           },
         ]
       }

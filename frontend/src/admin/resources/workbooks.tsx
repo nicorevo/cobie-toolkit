@@ -19,6 +19,10 @@ import {
   selectCurrentWorkbookId,
   setCurrentWorkbookId,
 } from '../../app/store';
+import {
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+} from './referenceInputs';
 
 type WorkbookRecord = Tables<{ schema: 'cobie' }, 'workbook'>;
 
@@ -32,7 +36,7 @@ const requiredField = [required()];
 function WorkbookForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
       <TextInput source="standard_version" fullWidth />
       <TextInput source="template_name" fullWidth />
@@ -90,7 +94,7 @@ export function WorkbookShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
+        <OrganizationReferenceField />
         <TextField source="name" />
         <TextField source="standard_version" />
         <TextField source="template_name" />

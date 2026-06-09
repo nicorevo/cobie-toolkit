@@ -7,9 +7,14 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  OrganizationReferenceField,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+} from './referenceInputs';
 
 const picklistFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="sheet_name" source="sheet_name" label="Sheet" />,
   <TextInput key="field_name" source="field_name" label="Field" />,
   <TextInput key="value" source="value@ilike" label="Value" alwaysOn />,
@@ -38,8 +43,8 @@ export function PicklistShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="sheet_name" />
         <TextField source="field_name" />
         <TextField source="value" />

@@ -7,13 +7,38 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+} from './referenceInputs';
 
 const issueFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="type" source="type" label="Type" />,
-  <TextInput key="risk" source="risk" label="Risk" />,
-  <TextInput key="owner" source="owner@ilike" label="Owner" />,
+  <ReferenceAutocompleteInput
+    key="issue_type_id"
+    source="issue_type_id"
+    reference="issue_type"
+    optionText="type_name"
+    label="Type"
+  />,
+  <ReferenceAutocompleteInput
+    key="risk_id"
+    source="risk_id"
+    reference="issue_risk"
+    optionText="risk_name"
+    label="Risk"
+  />,
+  <ReferenceAutocompleteInput
+    key="owner_contact_id"
+    source="owner_contact_id"
+    reference="contact"
+    optionText="email"
+    label="Owner Contact"
+  />,
 ];
 
 export function IssueList() {
@@ -25,11 +50,36 @@ export function IssueList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="type" />
-        <TextField source="risk" />
-        <TextField source="chance" />
-        <TextField source="impact" />
-        <TextField source="owner" />
+        <LookupReferenceField
+          source="issue_type_id"
+          reference="issue_type"
+          optionText="type_name"
+          label="Type"
+        />
+        <LookupReferenceField
+          source="risk_id"
+          reference="issue_risk"
+          optionText="risk_name"
+          label="Risk"
+        />
+        <LookupReferenceField
+          source="chance_id"
+          reference="issue_chance"
+          optionText="chance_name"
+          label="Chance"
+        />
+        <LookupReferenceField
+          source="issue_impact_id"
+          reference="issue_impact"
+          optionText="impact_name"
+          label="Impact"
+        />
+        <LookupReferenceField
+          source="owner_contact_id"
+          reference="contact"
+          optionText="email"
+          label="Owner Contact"
+        />
       </Datagrid>
     </List>
   );
@@ -40,16 +90,39 @@ export function IssueShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="type" />
-        <TextField source="risk" />
-        <TextField source="chance" />
-        <TextField source="impact" />
-        <TextField source="owner" />
-        <TextField source="sheet_name" />
-        <TextField source="row_name" />
+        <LookupReferenceField
+          source="issue_type_id"
+          reference="issue_type"
+          optionText="type_name"
+          label="Type"
+        />
+        <LookupReferenceField
+          source="risk_id"
+          reference="issue_risk"
+          optionText="risk_name"
+          label="Risk"
+        />
+        <LookupReferenceField
+          source="chance_id"
+          reference="issue_chance"
+          optionText="chance_name"
+          label="Chance"
+        />
+        <LookupReferenceField
+          source="issue_impact_id"
+          reference="issue_impact"
+          optionText="impact_name"
+          label="Impact"
+        />
+        <LookupReferenceField
+          source="owner_contact_id"
+          reference="contact"
+          optionText="email"
+          label="Owner Contact"
+        />
         <TextField source="description" />
         <TextField source="mitigation" />
         <TextField source="ext_system" />

@@ -2,7 +2,10 @@
 
 ## Strategia
 
-Il modello iniziale è **sheet-compatible**, non completamente normalizzato.
+Il modello iniziale era **sheet-compatible**. Il modello operativo corrente
+evolve verso una base dati normalizzata: i valori importati restano in
+`raw_row`, mentre i riferimenti usati dall'applicazione devono usare UUID,
+lookup e tabelle ponte.
 
 Per ogni foglio COBie:
 
@@ -66,9 +69,12 @@ Il progetto deve permettere mapping futuro da `contact` a `company`, `floor` a `
 
 - `name` non è sufficiente come PK tecnica: usare `id`.
 - Mantenere `name` per compatibilità COBie.
-- Riferimenti inter-sheet inizialmente testuali, con FK nullable dove sicuro.
+- Riferimenti inter-sheet normalizzati tramite FK UUID o tabelle ponte.
+- I campi testuali ridondanti vanno rimossi quando lo stesso valore è
+  ricavabile da una relazione normalizzata.
 - Indici su `organization_id`, `workbook_id`, `name`.
-- Indici su riferimenti comuni: `facility_name`, `floor_name`, `space_name`, `type_name`, `component_name`.
+- Indici su riferimenti comuni: `floor_id`, `type_id`, `component_id`,
+  `space_id` e sulle tabelle ponte.
 - Usare `raw_row jsonb` su ogni tabella sheet-compatible.
 
 ## API read model consigliato

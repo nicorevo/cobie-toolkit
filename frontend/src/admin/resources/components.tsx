@@ -11,12 +11,27 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const componentFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="type_name" source="type_name@ilike" label="Type" />,
-  <TextInput key="space_name" source="space_name@ilike" label="Space" />,
+  <ReferenceAutocompleteInput
+    key="type_id"
+    source="type_id"
+    reference="type"
+    optionText="name"
+    label="Type"
+  />,
   <TextInput
     key="asset_identifier"
     source="asset_identifier@ilike"
@@ -29,11 +44,15 @@ const requiredField = [required()];
 function ComponentForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
-      <TextInput source="type_name" fullWidth />
-      <TextInput source="space_name" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="type_id"
+        reference="type"
+        optionText="name"
+        label="Type"
+      />
       <TextInput source="description" fullWidth multiline />
       <TextInput source="serial_number" fullWidth />
       <TextInput source="installation_date" fullWidth />
@@ -54,9 +73,13 @@ export function ComponentList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="workbook_id" />
-        <TextField source="type_name" />
-        <TextField source="space_name" />
+        <WorkbookReferenceField />
+        <LookupReferenceField
+          source="type_id"
+          reference="type"
+          optionText="name"
+          label="Type"
+        />
         <TextField source="serial_number" />
         <TextField source="asset_identifier" />
         <TextField source="tag_number" />
@@ -70,11 +93,15 @@ export function ComponentShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="type_name" />
-        <TextField source="space_name" />
+        <LookupReferenceField
+          source="type_id"
+          reference="type"
+          optionText="name"
+          label="Type"
+        />
         <TextField source="description" />
         <TextField source="serial_number" />
         <TextField source="installation_date" />

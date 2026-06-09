@@ -7,11 +7,24 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+} from './referenceInputs';
 
 const resourceFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="category" source="category" label="Category" />,
+  <ReferenceAutocompleteInput
+    key="category_resource_id"
+    source="category_resource_id"
+    reference="category_resource"
+    optionText="category_name"
+    label="Category"
+  />,
 ];
 
 export function CobieResourceList() {
@@ -23,7 +36,12 @@ export function CobieResourceList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_resource_id"
+          reference="category_resource"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="description" />
       </Datagrid>
     </List>
@@ -35,10 +53,15 @@ export function CobieResourceShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_resource_id"
+          reference="category_resource"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="description" />
         <TextField source="external_system" />
         <TextField source="external_identifier" />

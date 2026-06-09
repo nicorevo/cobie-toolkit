@@ -144,6 +144,6 @@ La sicurezza reale è in RLS:
 - `authenticated` vede solo organizzazioni di cui `auth.uid()` è membro;
 - le righe COBie usano `app.is_valid_cobie_scope(organization_id, workbook_id)`;
 - `anon` non ha accesso ai dati tenant;
-- `DELETE` non è concesso ai client MVP.
+- `DELETE` e' concesso via PostgREST solo per le lookup amministrative e resta limitato dalle policy RLS agli admin organizzazione; le cancellazioni di lookup referenziate sono bloccate dai vincoli FK.
 
 Non usare mai `service_role` nel frontend.

@@ -11,11 +11,27 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const facilityFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="category" source="category" label="Category" />,
+  <ReferenceAutocompleteInput
+    key="category_facility_id"
+    source="category_facility_id"
+    reference="category_facility"
+    optionText="category_name"
+    label="Category"
+  />,
   <TextInput key="project_name" source="project_name@ilike" label="Project" />,
 ];
 
@@ -24,10 +40,15 @@ const requiredField = [required()];
 function FacilityForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
-      <TextInput source="category" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="category_facility_id"
+        reference="category_facility"
+        optionText="category_name"
+        label="Category"
+      />
       <TextInput source="project_name" fullWidth />
       <TextInput source="project_description" fullWidth multiline />
       <TextInput source="site_name" fullWidth />
@@ -52,7 +73,12 @@ export function FacilityList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_facility_id"
+          reference="category_facility"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="project_name" />
         <TextField source="site_name" />
         <TextField source="phase" />
@@ -66,10 +92,15 @@ export function FacilityShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="category_facility_id"
+          reference="category_facility"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="project_name" />
         <TextField source="project_description" />
         <TextField source="site_name" />

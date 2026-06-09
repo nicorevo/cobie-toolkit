@@ -11,12 +11,34 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const spaceFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="floor_name" source="floor_name@ilike" label="Floor" />,
-  <TextInput key="category" source="category" label="Category" />,
+  <ReferenceAutocompleteInput
+    key="floor_id"
+    source="floor_id"
+    reference="floor"
+    optionText="name"
+    label="Floor"
+  />,
+  <ReferenceAutocompleteInput
+    key="category_space_id"
+    source="category_space_id"
+    reference="category_space"
+    optionText="category_name"
+    label="Category"
+  />,
   <TextInput key="room_tag" source="room_tag@ilike" label="Room Tag" />,
 ];
 
@@ -25,11 +47,21 @@ const requiredField = [required()];
 function SpaceForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
-      <TextInput source="category" fullWidth />
-      <TextInput source="floor_name" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="category_space_id"
+        reference="category_space"
+        optionText="category_name"
+        label="Category"
+      />
+      <WorkbookScopedReferenceInput
+        source="floor_id"
+        reference="floor"
+        optionText="name"
+        label="Floor"
+      />
       <TextInput source="description" fullWidth multiline />
       <TextInput source="room_tag" fullWidth />
       <TextInput source="usable_height" fullWidth />
@@ -48,8 +80,18 @@ export function SpaceList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="floor_name" />
-        <TextField source="category" />
+        <LookupReferenceField
+          source="floor_id"
+          reference="floor"
+          optionText="name"
+          label="Floor"
+        />
+        <LookupReferenceField
+          source="category_space_id"
+          reference="category_space"
+          optionText="category_name"
+          label="Category"
+        />
         <TextField source="room_tag" />
         <TextField source="gross_area" />
         <TextField source="net_area" />
@@ -63,11 +105,21 @@ export function SpaceShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="category" />
-        <TextField source="floor_name" />
+        <LookupReferenceField
+          source="category_space_id"
+          reference="category_space"
+          optionText="category_name"
+          label="Category"
+        />
+        <LookupReferenceField
+          source="floor_id"
+          reference="floor"
+          optionText="name"
+          label="Floor"
+        />
         <TextField source="description" />
         <TextField source="room_tag" />
         <TextField source="usable_height" />

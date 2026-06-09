@@ -11,14 +11,34 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  LookupReferenceField,
+  OrganizationReferenceField,
+  OrganizationReferenceInput,
+  ReferenceAutocompleteInput,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+  WorkbookReferenceInput,
+  WorkbookScopedReferenceInput,
+} from './referenceInputs';
 
 const documentFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
-  <TextInput key="sheet_name" source="sheet_name" label="Sheet" />,
-  <TextInput key="row_name" source="row_name@ilike" label="Row" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="name" source="name@ilike" label="Name" alwaysOn />,
-  <TextInput key="category" source="category" label="Category" />,
-  <TextInput key="stage" source="stage" label="Stage" />,
+  <ReferenceAutocompleteInput
+    key="category_document_id"
+    source="category_document_id"
+    reference="category_document"
+    optionText="category_name"
+    label="Category"
+  />,
+  <ReferenceAutocompleteInput
+    key="stage_id"
+    source="stage_id"
+    reference="document_stage"
+    optionText="stage_name"
+    label="Stage"
+  />,
 ];
 
 const requiredField = [required()];
@@ -26,14 +46,27 @@ const requiredField = [required()];
 function DocumentForm() {
   return (
     <SimpleForm>
-      <TextInput source="organization_id" validate={requiredField} fullWidth />
-      <TextInput source="workbook_id" validate={requiredField} fullWidth />
+      <OrganizationReferenceInput validate={requiredField} />
+      <WorkbookReferenceInput validate={requiredField} />
       <TextInput source="name" validate={requiredField} fullWidth />
-      <TextInput source="category" fullWidth />
-      <TextInput source="approval_by" fullWidth />
-      <TextInput source="stage" fullWidth />
-      <TextInput source="sheet_name" fullWidth />
-      <TextInput source="row_name" fullWidth />
+      <WorkbookScopedReferenceInput
+        source="category_document_id"
+        reference="category_document"
+        optionText="category_name"
+        label="Category"
+      />
+      <WorkbookScopedReferenceInput
+        source="approval_contact_id"
+        reference="contact"
+        optionText="email"
+        label="Approval By"
+      />
+      <WorkbookScopedReferenceInput
+        source="stage_id"
+        reference="document_stage"
+        optionText="stage_name"
+        label="Stage"
+      />
       <TextInput source="directory" fullWidth />
       <TextInput source="file" fullWidth />
       <TextInput source="reference" fullWidth />
@@ -51,9 +84,18 @@ export function DocumentList() {
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />
-        <TextField source="category" />
-        <TextField source="sheet_name" />
-        <TextField source="row_name" />
+        <LookupReferenceField
+          source="category_document_id"
+          reference="category_document"
+          optionText="category_name"
+          label="Category"
+        />
+        <LookupReferenceField
+          source="stage_id"
+          reference="document_stage"
+          optionText="stage_name"
+          label="Stage"
+        />
         <TextField source="file" />
         <TextField source="reference" />
       </Datagrid>
@@ -66,14 +108,27 @@ export function DocumentShow() {
     <Show>
       <SimpleShowLayout>
         <TextField source="id" />
-        <TextField source="organization_id" />
-        <TextField source="workbook_id" />
+        <OrganizationReferenceField />
+        <WorkbookReferenceField />
         <TextField source="name" />
-        <TextField source="category" />
-        <TextField source="approval_by" />
-        <TextField source="stage" />
-        <TextField source="sheet_name" />
-        <TextField source="row_name" />
+        <LookupReferenceField
+          source="category_document_id"
+          reference="category_document"
+          optionText="category_name"
+          label="Category"
+        />
+        <LookupReferenceField
+          source="approval_contact_id"
+          reference="contact"
+          optionText="email"
+          label="Approval By"
+        />
+        <LookupReferenceField
+          source="stage_id"
+          reference="document_stage"
+          optionText="stage_name"
+          label="Stage"
+        />
         <TextField source="directory" />
         <TextField source="file" />
         <TextField source="reference" />

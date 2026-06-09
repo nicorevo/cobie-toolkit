@@ -6,9 +6,14 @@ import {
   TextField,
   TextInput,
 } from 'react-admin';
+import {
+  OrganizationReferenceField,
+  WorkbookFilterInput,
+  WorkbookReferenceField,
+} from './referenceInputs';
 
 const validationIssueFilters = [
-  <TextInput key="workbook_id" source="workbook_id" label="Workbook ID" />,
+  <WorkbookFilterInput key="workbook_id" />,
   <TextInput key="severity" source="severity" label="Severity" alwaysOn />,
   <TextInput key="sheet_name" source="sheet_name" label="Sheet" />,
   <TextInput key="rule_id" source="rule_id" label="Rule" />,
@@ -37,8 +42,8 @@ export function ValidationIssueShow() {
   return (
     <Show>
       <SimpleShowLayout>
-        <TextField source="workbook_id" />
-        <TextField source="organization_id" />
+        <WorkbookReferenceField />
+        <OrganizationReferenceField />
         <TextField source="severity" />
         <TextField source="rule_id" />
         <TextField source="sheet_name" />
