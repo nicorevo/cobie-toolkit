@@ -1,5 +1,7 @@
 Usa la skill react-admin-resource.
 
+Prima di iniziare, leggi AGENTS.md e, se esiste, LOCAL_WORKSPACE_CONTEXT.md.
+
 Crea o completa una Resource React Admin per: <RESOURCE_NAME>.
 
 Vincoli:

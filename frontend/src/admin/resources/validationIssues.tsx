@@ -1,6 +1,5 @@
 import {
   Datagrid,
-  List,
   Show,
   SimpleShowLayout,
   TextField,
@@ -11,6 +10,7 @@ import {
   WorkbookFilterInput,
   WorkbookReferenceField,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const validationIssueFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -21,7 +21,7 @@ const validationIssueFilters = [
 
 export function ValidationIssueList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={validationIssueFilters}
       perPage={25}
       sort={{ field: 'severity', order: 'ASC' }}
@@ -34,7 +34,7 @@ export function ValidationIssueList() {
         <TextField source="field_name" />
         <TextField source="message" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

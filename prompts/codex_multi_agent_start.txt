@@ -1,5 +1,7 @@
 Avvia un workflow multi-agente.
 
+Prima di assegnare task, leggi AGENTS.md e, se esiste, LOCAL_WORKSPACE_CONTEXT.md.
+
 Usa la skill using-agent-skills per selezionare il workflow trasversale corretto e scegli il sottoinsieme minimo dalla matrice skill in agents/TEAM.md.
 
 Agenti richiesti:

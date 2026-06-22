@@ -12,6 +12,11 @@
   ],
   "normalized_references": [
     {
+      "from": "floor.facility_id",
+      "to": "facility.id",
+      "scope": "workbook"
+    },
+    {
       "from": "space.floor_id",
       "to": "floor.id",
       "scope": "workbook"

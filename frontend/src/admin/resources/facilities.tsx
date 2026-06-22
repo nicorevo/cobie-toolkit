@@ -3,14 +3,17 @@ import {
   Datagrid,
   DateField,
   Edit,
-  List,
   required,
   Show,
   SimpleForm,
   SimpleShowLayout,
   TextField,
   TextInput,
+  useRecordContext,
 } from 'react-admin';
+import { Link as RouterLink } from 'react-router-dom';
+import type { CSSProperties } from 'react';
+import type { Tables } from '../../lib/supabase/types';
 import {
   LookupReferenceField,
   OrganizationReferenceField,
@@ -21,6 +24,18 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
+import { buildResourceListPath } from '../navigation';
+
+type FacilityRecord = Tables<{ schema: 'cobie' }, 'facility'>;
+
+const navigationLinkStyle = {
+  color: '#1976d2',
+  fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+  fontSize: '0.8125rem',
+  textDecoration: 'underline',
+  textUnderlineOffset: '3px',
+} satisfies CSSProperties;
 
 const facilityFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -36,6 +51,39 @@ const facilityFilters = [
 ];
 
 const requiredField = [required()];
+
+function FloorsLinkField({ label: _label }: { label?: string }) {
+  void _label;
+
+  const record = useRecordContext<FacilityRecord>();
+
+  if (!record) return null;
+
+  return (
+    <RouterLink
+      to={buildResourceListPath(
+        'floor',
+        {
+          workbook_id: record.workbook_id,
+          facility_id: record.id,
+        },
+        [
+          {
+            label: 'Facilities',
+            to: '/admin/facility',
+          },
+          {
+            label: record.name,
+          },
+        ],
+      )}
+      onClick={(event) => event.stopPropagation()}
+      style={navigationLinkStyle}
+    >
+      Floor
+    </RouterLink>
+  );
+}
 
 function FacilityForm() {
   return (
@@ -66,7 +114,7 @@ function FacilityForm() {
 
 export function FacilityList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={facilityFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -82,8 +130,9 @@ export function FacilityList() {
         <TextField source="project_name" />
         <TextField source="site_name" />
         <TextField source="phase" />
+        <FloorsLinkField label="Floor" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

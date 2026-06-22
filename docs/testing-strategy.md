@@ -1,5 +1,10 @@
 # Testing strategy
 
+Leggere `LOCAL_WORKSPACE_CONTEXT.md` per i dettagli del runtime e
+`docs/environment-operations.md` per accesso SSH, ordine delle verifiche e
+regole di sicurezza. Le chiavi locali sono sotto `.local/ssh/`, non
+`.local/.shh`.
+
 ## Test minimi
 
 - TypeScript typecheck.
@@ -81,3 +86,14 @@ DELETE resta non concesso/esposto nel MVP.
 - list/show Job, Resource, Issue e Picklist;
 - lista Validation Issues read-only;
 - errore autorizzazione mostrato correttamente.
+
+## Registrazione risultati
+
+Ogni giro di test deve aggiornare `docs/test-report-mvp.md` con:
+
+- data esatta;
+- commit o stato del worktree testato;
+- ambiente e host;
+- comandi eseguiti;
+- esito, warning e blocker;
+- distinzione tra test automatici e verifiche manuali.

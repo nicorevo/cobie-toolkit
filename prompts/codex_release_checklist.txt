@@ -1,5 +1,7 @@
 Esegui una release readiness review.
 
+Prima di iniziare, leggi AGENTS.md e, se esiste, LOCAL_WORKSPACE_CONTEXT.md.
+
 Controlla:
 - typecheck
 - lint

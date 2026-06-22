@@ -3,7 +3,6 @@ import {
   Datagrid,
   DateField,
   Edit,
-  List,
   required,
   Show,
   SimpleForm,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const spaceFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -73,7 +73,7 @@ function SpaceForm() {
 
 export function SpaceList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={spaceFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -96,7 +96,7 @@ export function SpaceList() {
         <TextField source="gross_area" />
         <TextField source="net_area" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

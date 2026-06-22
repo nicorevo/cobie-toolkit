@@ -3,7 +3,6 @@ import {
   Datagrid,
   DateField,
   Edit,
-  List,
   required,
   Show,
   SimpleForm,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const componentFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -66,7 +66,7 @@ function ComponentForm() {
 
 export function ComponentList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={componentFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -84,7 +84,7 @@ export function ComponentList() {
         <TextField source="asset_identifier" />
         <TextField source="tag_number" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

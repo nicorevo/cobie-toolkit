@@ -5,6 +5,7 @@
 frontend/.env
 frontend/.env.*
 !frontend/.env.example
+LOCAL_WORKSPACE_CONTEXT.md
 
 # Dependencies
 node_modules/

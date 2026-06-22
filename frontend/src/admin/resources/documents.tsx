@@ -3,7 +3,6 @@ import {
   Datagrid,
   DateField,
   Edit,
-  List,
   required,
   Show,
   SimpleForm,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const documentFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -77,7 +77,7 @@ function DocumentForm() {
 
 export function DocumentList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={documentFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -99,7 +99,7 @@ export function DocumentList() {
         <TextField source="file" />
         <TextField source="reference" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

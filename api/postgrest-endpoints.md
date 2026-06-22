@@ -103,7 +103,7 @@ Use the `cobie` profile for these endpoints.
 | `/workbook` | `cobie.workbook` | List/create/update workbook metadata | `organization_id`, `status`, `name` |
 | `/contact` | `cobie.contact` | Contact CRUD | `workbook_id`, `email`, `company`, `category_contact_id` |
 | `/facility` | `cobie.facility` | Facility CRUD | `workbook_id`, `name`, `category_facility_id` |
-| `/floor` | `cobie.floor` | Floor CRUD | `workbook_id`, `name`, `category_floor_id` |
+| `/floor` | `cobie.floor` | Floor CRUD | `workbook_id`, `name`, `facility_id`, `category_floor_id` |
 | `/space` | `cobie.space` | Space CRUD | `workbook_id`, `name`, `floor_id`, `category_space_id` |
 | `/zone` | `cobie.zone` | Zone CRUD | `workbook_id`, `name`, `category_zone_id` |
 | `/type` | `cobie.type` | Type CRUD | `workbook_id`, `name`, `category_type_id`, `asset_type_id`, `manufacturer` |

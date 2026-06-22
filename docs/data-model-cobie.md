@@ -73,7 +73,7 @@ Il progetto deve permettere mapping futuro da `contact` a `company`, `floor` a `
 - I campi testuali ridondanti vanno rimossi quando lo stesso valore è
   ricavabile da una relazione normalizzata.
 - Indici su `organization_id`, `workbook_id`, `name`.
-- Indici su riferimenti comuni: `floor_id`, `type_id`, `component_id`,
+- Indici su riferimenti comuni: `facility_id`, `floor_id`, `type_id`, `component_id`,
   `space_id` e sulle tabelle ponte.
 - Usare `raw_row jsonb` su ogni tabella sheet-compatible.
 

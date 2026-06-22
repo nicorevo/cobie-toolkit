@@ -1,7 +1,6 @@
 import {
   Datagrid,
   DateField,
-  List,
   Show,
   SimpleShowLayout,
   TextField,
@@ -14,6 +13,7 @@ import {
   WorkbookFilterInput,
   WorkbookReferenceField,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const jobFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -43,7 +43,7 @@ const jobFilters = [
 
 export function JobList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={jobFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -71,7 +71,7 @@ export function JobList() {
         <TextField source="duration" />
         <TextField source="frequency" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

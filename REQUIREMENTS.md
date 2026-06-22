@@ -2,6 +2,12 @@
 
 Stato: Approvata per planning/implementazione Fase 1 il 2026-06-06.
 
+## Contesto operativo locale
+
+Il contesto runtime locale e' documentato in `LOCAL_WORKSPACE_CONTEXT.md`, se presente. Il file e' ignorato da git e contiene host Docker remoto, accesso SSH, URL pubblicati, container Supabase e credenziali demo. Le specifiche versionate non devono includere secret reali o chiavi private.
+
+L'ambiente di sviluppo verificato usa il server Docker `192.168.1.150`; il repository resta la fonte versionata per frontend, SQL, migrazioni, seed e documentazione.
+
 ## Obiettivo
 
 Costruire una SPA gestionale React Admin + Supabase/PostgreSQL per alimentare, governare e interrogare dati COBie in modo multi-tenant.

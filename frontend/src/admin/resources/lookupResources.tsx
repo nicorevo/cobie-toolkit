@@ -5,7 +5,6 @@ import {
   DeleteButton,
   Edit,
   EditButton,
-  List,
   required,
   Show,
   ShowButton,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceField,
   WorkbookReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 export type LookupResourceConfig = {
   name: string;
@@ -218,7 +218,7 @@ function LookupForm({ config }: { config: LookupResourceConfig }) {
 
 export function createLookupResourceViews(config: LookupResourceConfig) {
   const LookupList = () => (
-    <List
+    <WorkbookScopedList
       filters={lookupFilters(config)}
       perPage={25}
       sort={{ field: config.valueField, order: 'ASC' }}
@@ -232,7 +232,7 @@ export function createLookupResourceViews(config: LookupResourceConfig) {
         <EditButton />
         <DeleteButton />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 
   const LookupShow = () => (

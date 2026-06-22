@@ -1,7 +1,6 @@
 import {
   Datagrid,
   DateField,
-  List,
   Show,
   SimpleShowLayout,
   TextField,
@@ -14,6 +13,7 @@ import {
   WorkbookFilterInput,
   WorkbookReferenceField,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const resourceFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -29,7 +29,7 @@ const resourceFilters = [
 
 export function CobieResourceList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={resourceFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -44,7 +44,7 @@ export function CobieResourceList() {
         />
         <TextField source="description" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

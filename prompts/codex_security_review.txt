@@ -1,5 +1,7 @@
 Usa la skill supabase-rls-security-review.
 
+Prima di iniziare, leggi AGENTS.md e, se esiste, LOCAL_WORKSPACE_CONTEXT.md.
+
 Analizza:
 - supabase/migrations/
 - frontend/src/

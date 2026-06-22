@@ -44,6 +44,12 @@ The project was copied to:
 /home/codex/work/cobie-react-admin-agentic-kit
 ```
 
+Current operational details, published URLs, project containers and demo credentials are intentionally kept in the git-ignored `LOCAL_WORKSPACE_CONTEXT.md` file at the project root. Agents and prompts should read that file when present before running remote commands.
+
+Project-local SSH keys and `known_hosts` are stored under `.local/ssh/`.
+`.local/.shh` is not used. See `docs/environment-operations.md` for the
+versioned procedure; never print or commit private-key contents.
+
 Local-only files were excluded from transfer:
 
 - `.git/`

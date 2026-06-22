@@ -1,5 +1,12 @@
 # Deployment
 
+Per host, utente, chiave, path remoto, URL e container correnti leggere
+`LOCAL_WORKSPACE_CONTEXT.md`. Per la procedura operativa riutilizzabile vedere
+`docs/environment-operations.md`.
+
+Gli strumenti SSH del progetto sono in `.local/ssh/`; `.local/.shh` non e' un
+percorso valido.
+
 ## Ambienti
 
 - local
@@ -39,3 +46,12 @@ COBIE_STORAGE_BUCKET=
 ```
 
 Le variabili Edge non devono comparire nel frontend.
+
+## Gate prima del deploy
+
+- migration status coerente con `supabase/migrations`;
+- RLS smoke e API smoke passati;
+- frontend typecheck, lint e build passati;
+- smoke browser autenticato completato;
+- nessun secret o file `.env` reale nel diff;
+- rollback e ambiente target confermati.

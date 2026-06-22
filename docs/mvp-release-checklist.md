@@ -2,6 +2,11 @@
 
 Date: 2026-06-07
 
+Current revalidation note: the 2026-06-18 environment check is recorded in
+`docs/test-report-mvp.md`. The historical automated passes below remain valid
+for the worktree tested on 2026-06-07, but they do not replace a fresh gate on
+the current uncommitted changes.
+
 ## Release Position
 
 Fase 1 MVP is implementation-complete for automated gates and ready for human browser/Auth review.

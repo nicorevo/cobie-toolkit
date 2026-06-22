@@ -17,7 +17,7 @@ import type { Tables } from '../../lib/supabase/types';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectCurrentWorkbookId,
-  setCurrentWorkbookId,
+  setCurrentWorkbookContext,
 } from '../../app/store';
 import {
   OrganizationReferenceField,
@@ -64,7 +64,13 @@ function SelectCurrentWorkbookButton() {
       disabled={isCurrent}
       onClick={(event) => {
         event.stopPropagation();
-        dispatch(setCurrentWorkbookId(record.id));
+        dispatch(
+          setCurrentWorkbookContext({
+            workbookId: record.id,
+            workbookName: record.name,
+            organizationId: record.organization_id,
+          }),
+        );
       }}
     />
   );
@@ -75,7 +81,7 @@ export function WorkbookList() {
     <List
       filters={workbookFilters}
       perPage={25}
-      sort={{ field: 'updated_at', order: 'DESC' }}
+      sort={{ field: 'created_at', order: 'DESC' }}
     >
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="name" />

@@ -24,6 +24,37 @@ Non usare Next.js, Server Components, API Routes Next.js o `@supabase/ssr`.
 
 Costruire un frontend React Admin e un modello PostgreSQL/Supabase per alimentare entità COBie e renderle disponibili via API REST.
 
+## Contesto locale di lavoro
+
+- All'inizio di ogni sessione o prompt operativo, leggere anche `LOCAL_WORKSPACE_CONTEXT.md` se esiste.
+- `LOCAL_WORKSPACE_CONTEXT.md` e' ignorato da git e contiene dettagli locali/runtime: host Docker remoto, utente SSH, path chiave, URL pubblicati, container Supabase e credenziali demo.
+- Non riportare nei file versionati credenziali, secret, chiavi private o valori reali di `.env`; usare i file versionati solo per puntare al file locale ignorato o per documentare contesto non sensibile.
+- L'ambiente Docker remoto attualmente verificato per sviluppo e smoke test e' `192.168.1.150`, accessibile via utente `codex` con chiave locale nel progetto.
+
+## Comando di inizializzazione della sessione
+
+Quando l'utente scrive esattamente `INIZIALIZZA UNA NUOVA SESSIONE DI SVILUPPO`,
+eseguire la procedura completa descritta in `docs/environment-operations.md`,
+sezione "Inizializzazione di una nuova sessione di sviluppo".
+
+La procedura deve:
+
+- leggere `AGENTS.md` e `LOCAL_WORKSPACE_CONTEXT.md`;
+- selezionare le skill minime applicabili tramite `using-agent-skills`;
+- verificare chiave SSH, host remoto e workspace senza stampare segreti;
+- confrontare il sorgente locale non ignorato con il workspace remoto;
+- sincronizzare solo file di progetto mancanti o differenti, senza copiare
+  `.git`, `.local`, `.env*`, `node_modules` o output di build e senza
+  cancellare file remoti automaticamente;
+- verificare e, se necessario, avviare lo stack Supabase e il container
+  frontend documentati nel contesto locale;
+- eseguire gli smoke test HTTP degli endpoint pubblicati;
+- riferire stato, eventuali correzioni effettuate e blocchi residui.
+
+Questa frase autorizza le normali operazioni reversibili di inizializzazione
+descritte sopra. Non autorizza reset del database, cancellazioni, stop di
+container estranei, modifica di migration applicate o esposizione di secret.
+
 ## Regole architetturali
 
 - Questa è una SPA React, non un'app SSR.

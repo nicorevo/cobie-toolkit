@@ -1,7 +1,6 @@
 import {
   Datagrid,
   DateField,
-  List,
   Show,
   SimpleShowLayout,
   TextField,
@@ -14,6 +13,7 @@ import {
   WorkbookFilterInput,
   WorkbookReferenceField,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const issueFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -43,7 +43,7 @@ const issueFilters = [
 
 export function IssueList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={issueFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -81,7 +81,7 @@ export function IssueList() {
           label="Owner Contact"
         />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

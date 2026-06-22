@@ -3,7 +3,6 @@ import {
   Datagrid,
   DateField,
   Edit,
-  List,
   required,
   Show,
   SimpleForm,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const attributeFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -58,7 +58,7 @@ function AttributeForm() {
 
 export function AttributeList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={attributeFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -74,7 +74,7 @@ export function AttributeList() {
         <TextField source="value" />
         <TextField source="unit" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

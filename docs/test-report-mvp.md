@@ -2,6 +2,45 @@
 
 Date: 2026-06-07
 
+## Revalidation attempt - 2026-06-18
+
+Target: current uncommitted worktree, including workbook-scoped navigation and
+the `floor.facility_id` migration.
+
+### Results
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Documentation diff | Pass | `git diff --check` completed without errors. |
+| Local Supabase CLI | Pass | Version `2.105.0` runs with project-local HOME. |
+| Project SSH material | Pass | Private key exists under `.local/ssh/` with mode `0600`; `known_hosts` exists. Key contents were not read or printed. |
+| Initial remote SSH | Partial pass | Host answered and reported `x86_64`. |
+| Supabase containers | Partial pass | Database, Kong, Auth, REST, Realtime, Storage, Studio, Inbucket, Analytics, Vector and pg-meta were running; Edge Runtime was exited. |
+| Frontend container | Fail | `cobie-frontend-dev` was not running. |
+| Published HTTP endpoints | Fail | Frontend, API gateway, Studio, Inbucket and analytics checks returned connection failure. |
+| Remote follow-up | Blocked | Host became unreachable with `No route to host` before sync/start/test commands could run. |
+| Local frontend gates | Blocked | Workstation has Node but no `npm`, no Docker CLI and no installed `frontend/node_modules`. |
+| Current migration/RLS/API smoke | Blocked | Could not sync the current worktree or reach the remote database after network loss. |
+| Current browser/Auth smoke | Blocked | Frontend endpoint was unavailable. |
+
+### Current verdict
+
+**NO-GO for claiming the environments are fully operational on 2026-06-18.**
+
+Required rechecks after the remote host is reachable:
+
+1. synchronize the current worktree without `.git`, `.local`, `.env*`,
+   dependencies or build outputs;
+2. run `supabase start` and verify all required project containers;
+3. start `cobie-frontend-dev`;
+4. verify published HTTP endpoints;
+5. run migration status, RLS smoke and API smoke;
+6. run frontend typecheck, lint and build;
+7. complete authenticated browser smoke.
+
+The environment access procedure and correct `.local/ssh/` path are documented
+in `docs/environment-operations.md`.
+
 ## Environment
 
 - Remote Linux Docker host: `192.168.1.150`

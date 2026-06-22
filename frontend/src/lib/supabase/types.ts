@@ -1650,6 +1650,7 @@ export type Database = {
           external_identifier: string | null
           external_object: string | null
           external_system: string | null
+          facility_id: string | null
           height: string | null
           id: string
           inserted_at: string
@@ -1670,6 +1671,7 @@ export type Database = {
           external_identifier?: string | null
           external_object?: string | null
           external_system?: string | null
+          facility_id?: string | null
           height?: string | null
           id?: string
           inserted_at?: string
@@ -1690,6 +1692,7 @@ export type Database = {
           external_identifier?: string | null
           external_object?: string | null
           external_system?: string | null
+          facility_id?: string | null
           height?: string | null
           id?: string
           inserted_at?: string
@@ -1707,6 +1710,13 @@ export type Database = {
             columns: ["workbook_id", "category_floor_id"]
             isOneToOne: false
             referencedRelation: "category_floor"
+            referencedColumns: ["workbook_id", "id"]
+          },
+          {
+            foreignKeyName: "floor_facility_fk"
+            columns: ["workbook_id", "facility_id"]
+            isOneToOne: false
+            referencedRelation: "facility"
             referencedColumns: ["workbook_id", "id"]
           },
           {
@@ -3449,4 +3459,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-

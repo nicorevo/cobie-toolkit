@@ -1,15 +1,16 @@
-# Frontend blueprint
+# React Admin frontend
 
 ## Scopo
 
-Blueprint React Admin per collegarsi a Supabase/PostgreSQL.
+SPA Vite/React Admin collegata a Supabase/PostgreSQL.
 
-## Setup previsto
+## Comandi
 
 ```bash
-npm create vite@latest frontend -- --template react-ts
-cd frontend
-npm install react-admin @supabase/supabase-js ra-supabase @mui/material @emotion/react @emotion/styled @reduxjs/toolkit react-redux react-router-dom material-react-table
+npm run dev
+npm run typecheck
+npm run lint
+npm run build
 ```
 
 ## Variabili
@@ -21,6 +22,9 @@ VITE_SUPABASE_PUBLISHABLE_KEY=
 
 Salvare questi valori in `frontend/.env.local` per il dev server Vite. Per script e comandi Supabase usare anche `.env` alla root. Non copiare service key nel frontend. Non committare file `.env` reali: resta versionabile solo `.env.example`.
 
-## Note
+## Implementazione
 
-I file in questa cartella sono scheletri. L'agente frontend deve adattarli al progetto reale.
+Le risorse e il comportamento corrente sono documentati in
+`../docs/react-admin-frontend.md`. La selezione workbook e' stato UI persistito
+in Redux/localStorage; i dati server restano gestiti da React Admin/PostgREST e
+protetti da RLS.

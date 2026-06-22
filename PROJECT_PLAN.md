@@ -1,5 +1,9 @@
 # Piano di progetto: COBie React Admin su Supabase/PostgreSQL
 
+## Contesto operativo
+
+Il runtime di sviluppo verificato e' il server Docker remoto `192.168.1.150`, mentre il repository versiona frontend, SQL, migrazioni, seed, configurazione Supabase e documentazione. I dettagli locali non versionati, incluse credenziali demo e URL pubblicati, stanno in `LOCAL_WORKSPACE_CONTEXT.md` e devono essere letti da ogni prompt/agente quando il file esiste.
+
 ## 1. Obiettivo
 
 Realizzare una piattaforma web gestionale per alimentare, governare e interrogare dati COBie, con primo focus su:

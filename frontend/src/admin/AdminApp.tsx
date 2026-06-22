@@ -1,7 +1,14 @@
-import { Admin, Layout, Resource, type LayoutProps } from 'react-admin';
+import {
+  Admin,
+  Layout,
+  Resource,
+  type LayoutProps,
+} from 'react-admin';
 import { authProvider } from './authProvider';
 import { dataProvider } from './dataProvider';
 import { AdminMenu } from './AdminMenu';
+import { AdminContextBootstrap } from './components/AdminContextBootstrap';
+import { AdminBreadcrumbs } from './components/AdminBreadcrumbs';
 import {
   FacilityCreate,
   FacilityEdit,
@@ -75,7 +82,11 @@ import {
 } from './resources/lookupResources';
 
 const AdminLayout = (props: LayoutProps) => (
-  <Layout {...props} menu={AdminMenu} />
+  <Layout {...props} menu={AdminMenu}>
+    <AdminContextBootstrap />
+    <AdminBreadcrumbs />
+    {props.children}
+  </Layout>
 );
 
 export function AdminApp() {

@@ -3,7 +3,6 @@ import {
   Datagrid,
   DateField,
   Edit,
-  List,
   required,
   Show,
   SimpleForm,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const zoneFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -55,7 +55,7 @@ function ZoneForm() {
 
 export function ZoneList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={zoneFilters}
       perPage={25}
       sort={{ field: 'name', order: 'ASC' }}
@@ -70,7 +70,7 @@ export function ZoneList() {
         />
         <TextField source="description" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

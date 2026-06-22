@@ -1,6 +1,10 @@
 import { supabaseDataProvider } from 'ra-supabase';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { DataProvider } from 'react-admin';
+import {
+  CURRENT_ORGANIZATION_STORAGE_KEY,
+  CURRENT_WORKBOOK_STORAGE_KEY,
+} from '../app/store';
 import { supabaseConfig } from '../lib/supabase/config';
 import { supabase } from '../lib/supabase/client';
 
@@ -64,8 +68,27 @@ const API_RESOURCES = new Set([
 
 const APP_RESOURCES = new Set(['organizations', 'organization_members']);
 
+const WORKBOOK_SCOPED_RESOURCES = new Set([
+  ...COBIE_RESOURCES,
+  ...API_RESOURCES,
+]);
+
+WORKBOOK_SCOPED_RESOURCES.delete('workbook');
+
 type ParamsWithMeta = {
   meta?: Record<string, unknown>;
+};
+
+type ParamsWithFilter = ParamsWithMeta & {
+  filter?: Record<string, unknown>;
+};
+
+type ParamsWithData = ParamsWithMeta & {
+  data: Record<string, unknown>;
+};
+
+type WorkbookOwnedRecord = {
+  workbook_id?: unknown;
 };
 
 function getResourceSchema(resource: string) {
@@ -88,6 +111,104 @@ function withResourceSchema<Params extends ParamsWithMeta>(
   };
 }
 
+function getCurrentWorkbookId() {
+  if (typeof window === 'undefined') return null;
+
+  return window.localStorage.getItem(CURRENT_WORKBOOK_STORAGE_KEY);
+}
+
+function getCurrentOrganizationId() {
+  if (typeof window === 'undefined') return null;
+
+  return window.localStorage.getItem(CURRENT_ORGANIZATION_STORAGE_KEY);
+}
+
+function requiresWorkbookScope(resource: string) {
+  return WORKBOOK_SCOPED_RESOURCES.has(resource);
+}
+
+function acceptsOrganizationScope(resource: string) {
+  return COBIE_RESOURCES.has(resource);
+}
+
+function withWorkbookScope<Params extends ParamsWithFilter>(
+  resource: string,
+  params: Params,
+): Params | null {
+  if (!requiresWorkbookScope(resource)) return params;
+
+  const currentWorkbookId = getCurrentWorkbookId();
+
+  if (!currentWorkbookId) return null;
+
+  return {
+    ...params,
+    filter: {
+      ...params.filter,
+      workbook_id: currentWorkbookId,
+    },
+  };
+}
+
+function emptyListResult() {
+  return Promise.resolve({ data: [], total: 0 });
+}
+
+function missingWorkbookError(resource: string) {
+  return Promise.reject(
+    new Error(`Select a workbook before accessing ${resource}.`),
+  );
+}
+
+function missingOrganizationError(resource: string) {
+  return Promise.reject(
+    new Error(`No organization context is available for ${resource}.`),
+  );
+}
+
+function withWorkbookData<Params extends ParamsWithData>(
+  resource: string,
+  params: Params,
+): Params | null {
+  const currentWorkbookId = getCurrentWorkbookId();
+  const currentOrganizationId = getCurrentOrganizationId();
+
+  if (acceptsOrganizationScope(resource) && !currentOrganizationId) return null;
+
+  if (!requiresWorkbookScope(resource)) {
+    return {
+      ...params,
+      data: acceptsOrganizationScope(resource)
+        ? {
+            ...params.data,
+            organization_id: currentOrganizationId,
+          }
+        : params.data,
+    };
+  }
+
+  if (!currentWorkbookId) return null;
+
+  return {
+    ...params,
+    data: {
+      ...params.data,
+      organization_id: currentOrganizationId,
+      workbook_id: currentWorkbookId,
+    },
+  };
+}
+
+function isCurrentWorkbookRecord(record: WorkbookOwnedRecord) {
+  const currentWorkbookId = getCurrentWorkbookId();
+
+  return (
+    !currentWorkbookId ||
+    record.workbook_id === undefined ||
+    record.workbook_id === currentWorkbookId
+  );
+}
+
 const postgrestDataProvider = supabaseDataProvider({
   instanceUrl: supabaseConfig.url,
   apiKey: supabaseConfig.publishableKey,
@@ -97,31 +218,108 @@ const postgrestDataProvider = supabaseDataProvider({
 
 export const dataProvider: DataProvider = {
   ...postgrestDataProvider,
-  getList: (resource, params) =>
-    postgrestDataProvider.getList(resource, withResourceSchema(resource, params)),
+  getList: (resource, params) => {
+    const scopedParams = withWorkbookScope(resource, params);
+
+    if (!scopedParams) return emptyListResult();
+
+    return postgrestDataProvider.getList(
+      resource,
+      withResourceSchema(resource, scopedParams),
+    );
+  },
   getOne: (resource, params) =>
-    postgrestDataProvider.getOne(resource, withResourceSchema(resource, params)),
+    requiresWorkbookScope(resource) && !getCurrentWorkbookId()
+      ? missingWorkbookError(resource)
+      : postgrestDataProvider
+          .getOne(resource, withResourceSchema(resource, params))
+          .then((result) => {
+            if (
+              requiresWorkbookScope(resource) &&
+              !isCurrentWorkbookRecord(result.data as WorkbookOwnedRecord)
+            ) {
+              throw new Error(`Record is outside the selected workbook.`);
+            }
+
+            return result;
+          }),
   getMany: (resource, params) =>
-    postgrestDataProvider.getMany(resource, withResourceSchema(resource, params)),
-  getManyReference: (resource, params) =>
-    postgrestDataProvider.getManyReference(
+    requiresWorkbookScope(resource) && !getCurrentWorkbookId()
+      ? Promise.resolve({ data: [] })
+      : postgrestDataProvider
+          .getMany(resource, withResourceSchema(resource, params))
+          .then((result) => ({
+            ...result,
+            data: requiresWorkbookScope(resource)
+              ? result.data.filter((record) =>
+                  isCurrentWorkbookRecord(record as WorkbookOwnedRecord),
+                )
+              : result.data,
+          })),
+  getManyReference: (resource, params) => {
+    const scopedParams = withWorkbookScope(resource, params);
+
+    if (!scopedParams) return emptyListResult();
+
+    return postgrestDataProvider.getManyReference(
       resource,
-      withResourceSchema(resource, params),
-    ),
-  create: (resource, params) =>
-    postgrestDataProvider.create(resource, withResourceSchema(resource, params)),
-  update: (resource, params) =>
-    postgrestDataProvider.update(resource, withResourceSchema(resource, params)),
-  updateMany: (resource, params) =>
-    postgrestDataProvider.updateMany(
+      withResourceSchema(resource, scopedParams),
+    );
+  },
+  create: (resource, params) => {
+    const scopedParams = withWorkbookData(resource, params);
+
+    if (!scopedParams) {
+      return requiresWorkbookScope(resource)
+        ? missingWorkbookError(resource)
+        : missingOrganizationError(resource);
+    }
+
+    return postgrestDataProvider.create(
       resource,
-      withResourceSchema(resource, params),
-    ),
+      withResourceSchema(resource, scopedParams),
+    );
+  },
+  update: (resource, params) => {
+    const scopedParams = withWorkbookData(resource, params);
+
+    if (!scopedParams) {
+      return requiresWorkbookScope(resource)
+        ? missingWorkbookError(resource)
+        : missingOrganizationError(resource);
+    }
+
+    return postgrestDataProvider.update(
+      resource,
+      withResourceSchema(resource, scopedParams),
+    );
+  },
+  updateMany: (resource, params) => {
+    const scopedParams = withWorkbookData(resource, params);
+
+    if (!scopedParams) {
+      return requiresWorkbookScope(resource)
+        ? missingWorkbookError(resource)
+        : missingOrganizationError(resource);
+    }
+
+    return postgrestDataProvider.updateMany(
+      resource,
+      withResourceSchema(resource, scopedParams),
+    );
+  },
   delete: (resource, params) =>
-    postgrestDataProvider.delete(resource, withResourceSchema(resource, params)),
+    requiresWorkbookScope(resource) && !getCurrentWorkbookId()
+      ? missingWorkbookError(resource)
+      : postgrestDataProvider.delete(
+          resource,
+          withResourceSchema(resource, params),
+        ),
   deleteMany: (resource, params) =>
-    postgrestDataProvider.deleteMany(
-      resource,
-      withResourceSchema(resource, params),
-    ),
+    requiresWorkbookScope(resource) && !getCurrentWorkbookId()
+      ? missingWorkbookError(resource)
+      : postgrestDataProvider.deleteMany(
+          resource,
+          withResourceSchema(resource, params),
+        ),
 };

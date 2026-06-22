@@ -4,7 +4,6 @@ import {
   DateField,
   Edit,
   EmailField,
-  List,
   required,
   Show,
   SimpleForm,
@@ -21,6 +20,7 @@ import {
   WorkbookReferenceInput,
   WorkbookScopedReferenceInput,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const contactFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -65,7 +65,7 @@ function ContactForm() {
 
 export function ContactList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={contactFilters}
       perPage={25}
       sort={{ field: 'email', order: 'ASC' }}
@@ -77,7 +77,7 @@ export function ContactList() {
         <TextField source="family_name" />
         <TextField source="phone" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

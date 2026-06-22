@@ -1,5 +1,7 @@
 Usa la skill cobie-import-export e cobie-standard-ingestion.
 
+Prima di iniziare, leggi AGENTS.md e, se esiste, LOCAL_WORKSPACE_CONTEXT.md.
+
 Progetta la fase import/export COBie workbook.
 
 Non implementare ancora parsing definitivo se il template reale non è stato letto.

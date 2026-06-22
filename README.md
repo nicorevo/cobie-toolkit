@@ -4,6 +4,20 @@ Starter kit agentico per costruire una piattaforma **React Admin + Supabase/Post
 
 Data di generazione: 2026-06-01
 
+## Contesto operativo corrente
+
+L'ambiente di sviluppo/smoke test verificato usa una macchina Linux Docker remota su `192.168.1.150`. Il progetto viene eseguito come:
+
+- frontend Vite/React Admin in container Docker;
+- stack Supabase locale completo gestito da Supabase CLI su container Docker;
+- SQL, migrazioni, seed, configurazione Supabase e frontend versionati in questo repository.
+
+I dettagli operativi locali, inclusi utente SSH, path della chiave, URL pubblicati, container Supabase e credenziali demo, stanno in `LOCAL_WORKSPACE_CONTEXT.md`. Quel file e' ignorato da git: ogni prompt/agente deve leggerlo se presente, ma non deve versionarne i contenuti.
+
+Gli strumenti SSH locali sono sotto `.local/ssh/` (non `.local/.shh`). La
+procedura versionata per verificare, avviare e testare gli ambienti e' in
+`docs/environment-operations.md`.
+
 ## Obiettivo iniziale
 
 Costruire un frontend gestionale in React Admin che:
@@ -49,24 +63,31 @@ Questo kit usa una strategia **sheet-compatible COBie 2.4 UK/Q2 2026**, con pres
 
 1. Leggi `PROJECT_PLAN.md`.
 2. Leggi `AGENTS.md`.
-3. Leggi `agents/TEAM.md`.
-4. Fai eseguire a Codex il prompt `prompts/codex_start_project.txt`.
-5. Attiva le skill in `.codex/skills`, incluse le skill COBie locali, le skill `agent-skills` installate da `addyosmani/agent-skills`, le skill Supabase, Mermaid e frontend React/MUI/Vite.
-6. Prima di generare codice reale, fai completare al COBie Standard Agent la verifica del template più recente.
+3. Leggi `LOCAL_WORKSPACE_CONTEXT.md` se esiste nella root del progetto.
+4. Leggi `agents/TEAM.md`.
+5. Fai eseguire a Codex il prompt `prompts/codex_start_project.txt`.
+6. Attiva le skill in `.codex/skills`, incluse le skill COBie locali, le skill `agent-skills` installate da `addyosmani/agent-skills`, le skill Supabase, Mermaid e frontend React/MUI/Vite.
+7. Prima di generare codice reale, fai completare al COBie Standard Agent la verifica del template più recente.
 
 ## File principali
 
 - `AGENTS.md`: regole globali del repository per Codex.
+- `LOCAL_WORKSPACE_CONTEXT.md`: contesto locale/runtime ignorato da git, da leggere se presente.
 - `.codex/skills/*/SKILL.md`: skill operative per agenti specializzati.
 - `agents/TEAM.md`: matrice agenti/skill candidate per i workflow multi-agente.
 - `supabase/migrations/`: migrazioni SQL iniziali.
 - `api/openapi.cobie-rest.yaml`: contratto API REST iniziale.
 - `docs/security-guardrails.md`: regole di sicurezza.
+- `docs/environment-operations.md`: accesso SSH e verifica degli ambienti.
 - `docs/data-model-cobie.md`: modello dati COBie.
-- `frontend/`: blueprint del progetto React Admin.
+- `frontend/`: SPA React Admin.
 - `agents/AGENT_TASKS.md`: attività distribuite per agenti.
 - `prompts/`: prompt pronti da usare con Codex.
 
 ## Stato
 
-Questo non è ancora un prodotto eseguibile completo. È una **cartella di progetto agent-ready**: serve a far partire più agenti in modo coordinato, senza perdere controllo su standard, sicurezza, schema, API e UI.
+Il repository contiene un **MVP eseguibile** con schema/migrazioni Supabase,
+RLS, API smoke test e frontend React Admin. I gate automatici storici sono
+documentati in `docs/test-report-mvp.md`; prima di una release restano
+obbligatori lo smoke browser autenticato sul worktree corrente, la review
+finale e l'hardening di produzione.

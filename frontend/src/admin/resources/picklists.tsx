@@ -1,7 +1,6 @@
 import {
   Datagrid,
   DateField,
-  List,
   Show,
   SimpleShowLayout,
   TextField,
@@ -12,6 +11,7 @@ import {
   WorkbookFilterInput,
   WorkbookReferenceField,
 } from './referenceInputs';
+import { WorkbookScopedList } from '../components/WorkbookScopedList';
 
 const picklistFilters = [
   <WorkbookFilterInput key="workbook_id" />,
@@ -22,7 +22,7 @@ const picklistFilters = [
 
 export function PicklistList() {
   return (
-    <List
+    <WorkbookScopedList
       filters={picklistFilters}
       perPage={25}
       sort={{ field: 'sheet_name', order: 'ASC' }}
@@ -34,7 +34,7 @@ export function PicklistList() {
         <TextField source="description" />
         <TextField source="source_version" />
       </Datagrid>
-    </List>
+    </WorkbookScopedList>
   );
 }
 

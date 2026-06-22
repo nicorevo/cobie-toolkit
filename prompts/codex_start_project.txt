@@ -1,4 +1,5 @@
-Leggi AGENTS.md, PROJECT_PLAN.md, REQUIREMENTS.md, docs/architecture.md, docs/security-guardrails.md e agents/AGENT_TASKS.md.
+Leggi AGENTS.md e, se esiste, LOCAL_WORKSPACE_CONTEXT.md.
+Poi leggi PROJECT_PLAN.md, REQUIREMENTS.md, docs/architecture.md, docs/security-guardrails.md e agents/AGENT_TASKS.md.
 
 Usa le skill project-orchestrator e using-agent-skills.
 Per ogni agente, scegli il sottoinsieme minimo tra le skill candidate in agents/TEAM.md insieme alle skill COBie locali gia' configurate.
